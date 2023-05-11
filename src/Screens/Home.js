@@ -310,6 +310,7 @@
 // export default Home;
 import {
   FlatList,
+  Image,
   ImageBackground,
   StyleSheet,
   Text,
@@ -317,6 +318,10 @@ import {
 } from "react-native";
 import React from "react";
 import { hp, wp } from "../../utilis/Responsive";
+import { Vimeo } from "react-native-vimeo-iframe";
+import { CustomFonts } from "../../Theme/Fonts";
+import colors from "../../Theme/Colors";
+import { Icon } from "@rneui/base";
 
 export default function Home() {
   return (
@@ -324,12 +329,58 @@ export default function Home() {
       source={require("../../Assets/Dark_Bg_ASWJ.png")}
       style={{ width: wp(100), height: hp(100) }}
     >
+      <View
+        style={{
+          backgroundColor: colors.primary,
+          width: wp(100),
+          height: hp(7),
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <View />
+        <Text
+          style={{
+            fontFamily: CustomFonts.bold,
+            color: colors.white,
+            fontSize: hp(2),
+          }}
+        >
+          ASWJ-Home
+        </Text>
+        <View />
+      </View>
       <FlatList
         data={["a", "a", "a", "a", "a"]}
         renderItem={({ item, index }) => {
           return (
-            <View>
-              <Text>njkbhg</Text>
+            <View
+              style={{
+                width: wp(100),
+                alignItems: "center",
+              }}
+            >
+              <Icon name="sc-telegram" type="evilicon" color="#517fa4" />
+              <Vimeo
+                style={{
+                  backgroundColor: "transparent",
+                  width: wp(98),
+                  height: hp(30),
+                }}
+                videoId={"806710332"}
+                onReady={() => console.log("Video is ready", item)}
+                onPlay={() => console.log("Video is playing")}
+                onPlayProgress={(data) =>
+                  console.log("Video progress data:", data)
+                }
+                onFinish={() => console.log("Video is finished")}
+                loop={false}
+                autoPlay={false}
+                controls={true}
+                speed={false}
+                time={"0m0s"}
+              />
             </View>
           );
         }}
