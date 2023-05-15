@@ -31,6 +31,8 @@ import eventDetail from "../Screens/EventDetails";
 import Profile from "../Screens/Profile";
 import auth, { firebase } from "@react-native-firebase/auth";
 import EventDetail from "../Screens/EventDetails";
+import BottomTabs from "./BottomTabs";
+import Settings from "../Screens/Settings";
 
 const Stack = createNativeStackNavigator();
 const Routes = () => {
@@ -74,13 +76,12 @@ const Routes = () => {
         <Stack.Screen
           options={{ headerShown: false }}
           name="Home"
-          component={(e) =>
-            DrawerNavigator({
-              name: "Home",
-              route: e.route,
-              navigation: e.navigation,
-            })
-          }
+          component={BottomTabs}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Settings"
+          component={Settings}
         />
         <Stack.Screen
           options={{ headerShown: false }}

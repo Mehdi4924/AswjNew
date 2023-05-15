@@ -4,14 +4,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
   FlatList,
-  TouchableHighlight,
-  Platform,
-  TextInput,
-  ImageBackground,
-  Dimensions,
   Modal,
+  PermissionsAndroid,
+  StyleSheet,
+  Image,
 } from "react-native";
 import { Btn } from "../../utilis/Btn";
 import MapView, { Marker } from "react-native-maps";
@@ -19,33 +16,21 @@ import BackGround from "../Components/Background";
 import BackButton from "../Components/BackButton";
 import MapViewDirections from "react-native-maps-directions";
 import database from "@react-native-firebase/database";
-import auth, { firebase } from "@react-native-firebase/auth";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import style from "../../Theme/styles";
-// import MapView from 'react-native-maps';
-import { PermissionsAndroid } from "react-native";
-// import Geolocation from "@react-native-community/geolocation";
 import Geolocation from "react-native-geolocation-service";
-const FindMyMasjid = ({ navigation, route }) => {
-  // console.log(route.params,"route.params");
-  let latitude = route.params.params.lat;
-  let longitude = route.params.params.long;
-  console.log(latitude, longitude);
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const [Name, onChangeName] = useState("");
-  const [date, setDate] = useState("");
-  const [errors, setError] = useState(null);
-  const [expTIme, setExpTime] = useState(null);
+import colors from "../../Theme/Colors";
+import { hp, wp } from "../../utilis/Responsive";
+import { CustomFonts } from "../../Theme/Fonts";
+import { Icon } from "@rneui/base";
+
+const GOOGLE_MAPS_APIKEY = "AIzaSyAizf1uimNFXUerqmfomTFsJqGmac4_GPM";
+const FindMyMasjid = (props) => {
+  const { navigation, route } = props;
+  const latitude = props.latLng.lat;
+  const longitude = props.latLng.lng;
   const [text, settext] = useState("Select Mosques");
-  const [isloading, setisloading] = useState(false);
-  const [inputBorder, setinputBorder] = useState(false);
-  const [lat, setlat] = useState();
-  const [long, setlong] = useState();
-  const [showModal, setshowModal] = useState(false);
-  const [searchIt, setsearchIt] = useState(false);
-  const [male, setmale] = useState(false);
-  const [uid, setUid] = useState();
+  const [latLng, setLatLng] = useState();
   const [check, setcheck] = useState([]);
   const [arr, setarr] = useState([]);
   const [Mosq, setMosq] = useState([]);
@@ -53,45 +38,11 @@ const FindMyMasjid = ({ navigation, route }) => {
   const [Key, setKey] = useState();
   const [refresh, setRefresh] = useState(false);
   const [Center, setCenter] = useState(false);
-
-  const GOOGLE_MAPS_APIKEY = "AIzaSyAizf1uimNFXUerqmfomTFsJqGmac4_GPM";
   const [showModal2, setshowModal2] = useState(false);
-  const [list, setlist] = useState([
-    {
-      title: "ASWJ Anual Conference",
-      date: "27 january, 2022",
-      text: "ASWJ Australia",
-    },
-    {
-      title: "sadsa",
-      date: "27 january, 2022",
-      text: "Youth Center",
-    },
-    {
-      title: "dsadsa",
-      date: "25 january, 2022",
-      text: "Youth Center",
-    },
-    {
-      title: "Masjid As Salaam",
-      date: "27 january, 2022",
-      text: "Masjid As-Salaam",
-    },
-    {
-      title: "ASWJ Auburn",
-      date: "27 january, 2022",
-      text: "ASWJ Album",
-    },
-  ]);
   const origin = { latitude: 37.3318456, longitude: -122.0296002 };
   const destination = { latitude: 37.771707, longitude: -122.4053769 };
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        setUid(user.uid);
-      }
-    });
     if (arr.length == 0) {
       test();
     }
@@ -113,7 +64,6 @@ const FindMyMasjid = ({ navigation, route }) => {
         getGeoLocaation();
       } else {
         console.log("location permission denied");
-        // alert("Location permission denied");
       }
     } catch (err) {
       console.warn(err);
@@ -123,30 +73,18 @@ const FindMyMasjid = ({ navigation, route }) => {
     Geolocation.getCurrentPosition(
       (position) => {
         console.log(position, "Pos");
+        // setLatLng(position.coords);
       },
       (error) => {
-        // See error code charts below.
         console.log(error.code, error.message);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
-    // const config = {
-    //   enableHighAccuracy: true,
-    //   timeout: 2000,
-    //   maximumAge: 3600000,
-    // };
-
-    // Geolocation.getCurrentPosition(
-    //   (info) => console.log("INFO", info),
-    //   (error) => console.log("ERROR", error),
-    //   config
-    // );
   };
   const test = () => {
     database()
       .ref("/mosqueList")
       .on("value", (snapshot) => {
-        // console.log("runs", JSON.stringify(snapshot.val(), null, 2));
         let data = snapshot.val();
         for (let key in data) {
           data[key].hashNumber = key;
@@ -170,19 +108,35 @@ const FindMyMasjid = ({ navigation, route }) => {
   };
   const onPressok = () => {
     setshowModal2(false);
-    // console.log(check[0].latitude);
-    setlong(JSON.parse(check[0].longitude));
-    setlat(JSON.parse(check[0].latitude));
-    console.log(lat, long);
+    setLatLng({
+      longitude: JSON.parse(check[0].longitude),
+      latitude: JSON.parse(check[0].latitude),
+    });
     setCenter(true);
   };
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
-        <BackButton
-          title={"Find My Masjid"}
-          onPressBack={() => navigation.navigate("Home")}
-        />
+        <View style={styles.header}>
+          <Image
+            source={require("../../Assets/fb_logo.jpg")}
+            style={{ height: hp(6), width: wp(20) }}
+            resizeMode="contain"
+          />
+          <Text style={styles.headerText}>ASWJ-Home</Text>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("Settings")}
+            >
+              <Icon
+                type="material-community"
+                name="account-circle"
+                size={hp(3)}
+                color={colors.primary}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
         <TouchableOpacity
           onPress={() => setshowModal2(true)}
           style={{
@@ -215,12 +169,19 @@ const FindMyMasjid = ({ navigation, route }) => {
             longitudeDelta: 0.0421,
           }}
         >
-          <Marker coordinate={{ latitude: latitude, longitude: longitude }} />
           {Center ? (
-            <Marker
-              pinColor={"blue"}
-              coordinate={{ latitude: lat, longitude: long }}
-            />
+            <>
+              <Marker
+                coordinate={{ latitude: latitude, longitude: longitude }}
+              />
+              <Marker
+                pinColor={"blue"}
+                coordinate={{
+                  latitude: latLng?.latitude,
+                  longitude: latLng.longitude,
+                }}
+              />
+            </>
           ) : null}
           <MapViewDirections
             origin={origin}
@@ -400,5 +361,25 @@ const FindMyMasjid = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: colors.white,
+    width: wp(100),
+    height: hp(7),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerText: {
+    fontFamily: CustomFonts.bold,
+    color: colors.primary,
+    fontSize: hp(2),
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: wp(3),
+  },
+});
 export default FindMyMasjid;
