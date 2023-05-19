@@ -6,30 +6,13 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  Image,
-  FlatList,
-  TouchableHighlight,
-  Platform,
-  TextInput,
-  ImageBackground,
   Dimensions,
-  Modal,
 } from "react-native";
-import { FormInput } from "../../utilis/Text_input";
-import { Btn } from "../../utilis/Btn";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Feather from "react-native-vector-icons/Feather";
-import Octicons from "react-native-vector-icons/Octicons";
 import BackGround from "../Components/Background";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import BackButton from "../Components/BackButton";
-import Swiper from "react-native-swiper";
-import { SwiperFlatList } from "react-native-swiper-flatlist";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import database from "@react-native-firebase/database";
-import { Update_Profile_Validations } from "../../utilis/validation";
-import moment from "moment";
-import { color } from "react-native-reanimated";
 import style from "../../Theme/styles";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -102,7 +85,6 @@ const Duas2 = ({ navigation, route }) => {
         <View>
           <View
             style={{
-              flexDirection: "column",
               justifyContent: "center",
               backgroundColor: "rgba(255,255,255, 0.1)",
               marginVertical: 5,

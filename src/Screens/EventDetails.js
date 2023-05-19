@@ -5,65 +5,43 @@ import {
   TouchableOpacity,
   View,
   Image,
-  FlatList,
-  TouchableHighlight,
   Platform,
-  TextInput,
-  ImageBackground,
   Dimensions,
   Modal,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { FormInput } from "../../utilis/Text_input";
 import { Btn } from "../../utilis/Btn";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Feather from "react-native-vector-icons/Feather";
-import Octicons from "react-native-vector-icons/Octicons";
 import BackGround from "../Components/Background";
 import Entypo from "react-native-vector-icons/Entypo";
 import BackButton from "../Components/BackButton";
-import { Update_Profile_Validations } from "../../utilis/validation";
 import database from "@react-native-firebase/database";
 import moment from "moment";
-import { DrawerActions } from "@react-navigation/native";
-import auth, { firebase } from "@react-native-firebase/auth";
+import { firebase } from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ModalGuest from "../Components/ModalGuest";
 import style from "../../Theme/styles";
+import { hp, wp } from "../../utilis/Responsive";
+import colors from "../../Theme/Colors";
+import { CustomFonts } from "../../Theme/Fonts";
 
 const EventDetail = ({ navigation, route }) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
   let data = route.params.params.data;
-  console.log("data ==>", JSON.stringify(data, null, 2));
-
   const [members, onChangemembers] = useState("");
-  const [errors, setError] = useState(null);
-  const [expTIme, setExpTime] = useState(null);
-  const [text, settext] = useState("Select Mosques");
-  const [isloading, setisloading] = useState(false);
-  const [inputBorder, setinputBorder] = useState(false);
-  const [search, setsearch] = useState("");
-  const [showModal, setshowModal] = useState(false);
   const [flagForButton, setFlagForButton] = useState(false);
-  const [arr, setarr] = useState([]);
-  const [refresh, setRefresh] = useState(false);
   const [uid, setUid] = useState();
   const [uName, setUname] = useState();
   const [unauthorized, setunauthorized] = useState(false);
-  const [showModal2, setshowModal2] = useState(false);
+
   useEffect(() => {
-    console.log('triggered');
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log(user);
         setUid(user.uid);
         exits(user.uid);
         database()
           .ref("profile/" + uid)
           .on("value", (snapshot) => {
             let data = snapshot.val();
-            console.log("data", data);
             if (data == null) {
             } else {
               setUname(data.fullName);
@@ -71,73 +49,13 @@ const EventDetail = ({ navigation, route }) => {
           });
       }
     });
-    // if (arr.length == 0) {
-    //   test();
-    // }
   }, []);
   const exits = async (id) => {
     const v = await AsyncStorage.getItem("Registered");
     if (v == id) {
-      // alert(v);
       setFlagForButton(true);
     }
   };
-
-  // const test = () => {
-  //   database()
-  //     .ref("/eventList")
-  //     .on("value", (snapshot) => {
-  //       let data = snapshot.val();
-  //       let b, c;
-  //       for (let key in data) {
-  //         data[key].hashNumber = key;
-  //         //   console.log(data[key].startDate);
-  //         b = moment(data[key].endDate, "mm/dd/yy")
-  //           .utcOffset("+05:30")
-  //           .format("YY-MM-DD");
-  //         c = moment().utcOffset("+05:30").format("YY-MM-DD");
-  //         let str = data[key].startDate;
-
-  //         let first, second, third, form, day;
-  //         first = str.substring(0, str.indexOf("/"));
-  //         str = str.substring(str.indexOf("/") + 1);
-  //         second = str.substring(0, str.indexOf("/"));
-  //         str = str.substring(str.indexOf("/") + 1, str.length);
-  //         third = str;
-  //         var event = new Date(Date.UTC("20" + third, first - 1, second, 3, 0, 0));
-  //         var options = { day: 'numeric', year: 'numeric', month: 'long' };
-
-  //         data[key].startDate = event.toLocaleDateString('en-us', options)
-
-  //         let str2 = data[key].endDate;
-
-  //         let first2, second2, third2, form2, day2;
-  //         first2 = str2.substring(0, str2.indexOf("/"));
-  //         str2 = str2.substring(str2.indexOf("/") + 1);
-  //         second2 = str2.substring(0, str2.indexOf("/"));
-  //         str2 = str2.substring(str2.indexOf("/") + 1, str2.length);
-  //         third2 = str2;
-  //         var event2 = new Date(Date.UTC("20" + third2, first2 - 1, second2, 3, 0, 0));
-  //         var options = { day: 'numeric', year: 'numeric', month: 'long' };
-
-  //         data[key].endDate = event2.toLocaleDateString('en-us', options)
-  //         //   console.log(b);
-  //         //   console.log(c);
-  //         //   console.log(moment(b).isAfter(c));
-  //         // console.log('this is the end date', moment(b).isAfter(c));
-
-  //         // if (moment(b).isAfter(c) == true) {
-  //         //   // alert("here");\
-  //         //   let testingArr = []
-  //         //   testingArr.push(data[key]);
-  //         //   // setarr(testingArr)
-
-  //         // }
-  //         setRefresh(!refresh);
-  //       }
-  //       console.log(arr);
-  //     });
-  // };
   const submit = async () => {
     if (uid == null) {
       setunauthorized(true);
@@ -165,278 +83,76 @@ const EventDetail = ({ navigation, route }) => {
       <BackGround>
         <BackButton
           title={"Event Detail"}
-          onPressBack={() => navigation.goBack(null)}
+          onPressBack={() => navigation.goBack()}
         />
-        {/* <ModalGuest visible={unauthorized} title={"NOT AUTHORIZED"} message={"Please login as a registered user to use this service"}/> */}
-
         <Modal
           animationType="fade"
-          transparent={true}
           visible={unauthorized}
+          transparent
           onRequestClose={() => {}}
         >
-          <View
-            style={{
-              marginHorizontal: "10%",
-              marginVertical: 10,
-              marginVertical: "75%",
-              backgroundColor: "#fff",
-              borderRadius: 15,
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#F5F5F5",
-                paddingVertical: 10,
-                borderTopRightRadius: 20,
-                borderTopLeftRadius: 20,
-                borderWidth: 1,
-                //   borderBottomColor: "rgba(0, 0, 0,0.2)",
-                borderColor: "transparent",
-              }}
-            >
-              <Text
-                style={{
-                  color: "#000",
-                  fontSize: 18,
-                  letterSpacing: 1,
-                  // textAlign: "justify",
-                  fontFamily: "Montserrat-Medium",
-                  marginHorizontal: 20,
-                }}
-              >
-                NOT AUTHORIZED
+          <View style={styles.modalBackground}>
+            <View style={styles.modalMainView}>
+              <View style={styles.modalTopView}>
+                <Text style={styles.unauthorizedText}>NOT AUTHORIZED</Text>
+              </View>
+              <Text style={styles.unauthorizedLoginText}>
+                Please login as a registered user to use this service
               </Text>
+              <Btn
+                text="OK"
+                onPress={() => {
+                  setunauthorized(false);
+                }}
+                containerStyle={styles.btnContainer}
+                textStyle={styles.btnText}
+              />
             </View>
-            <Text
-              style={{
-                paddingVertical: 10,
-                fontFamily: "Montserrat-Light",
-                marginHorizontal: 20,
-                color: "#000",
-              }}
-            >
-              Please login as a registered user to use this service
-            </Text>
-            {/* <TouchableOpacity onPress={()=>alert("onpress")}> */}
-            <Btn
-              text="OK"
-              onPress={() => {
-                // alert("here")
-                setunauthorized(false);
-              }}
-              containerStyle={{
-                marginBottom: 0,
-                backgroundColor: "#00A300",
-                paddingVertical: 15,
-                width: "50%",
-                alignSelf: "flex-end",
-                // paddingHorizontal: 50,
-                marginVertical: 20,
-                borderBottomRightRadius: 15,
-              }}
-              textStyle={[
-                style.thickHeader,
-                {
-                  color: "white",
-                  textAlign: "center",
-                  fontFamily: "Montserrat-Medium",
-                  fontSize: 13,
-                  letterSpacing: 1,
-                },
-              ]}
-            />
-            {/* </TouchableOpacity> */}
           </View>
         </Modal>
-
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Image
-            style={{
-              height: 50,
-              width: 50,
-              marginHorizontal: 10,
-              alignSelf: "center",
-            }}
-            source={{ uri: data.imageUrl[0] }}
+            style={styles.topImage}
+            resizeMode="contain"
+            source={
+              data.imageUrl.length > 0
+                ? { uri: data.imageUrl[0] }
+                : require("../../Assets/fb_logo.jpg")
+            }
           />
-          <View
-            style={{
-              justifyContent: "center",
-              backgroundColor: "rgba(255,255,255, 0.1)",
-              marginVertical: 10,
-              paddingVertical: 15,
-              marginHorizontal: 15,
-            }}
-          >
-            <Text
-              style={[
-                style.forgetText,
-                {
-                  color: "#fff",
-                  fontFamily: "Montserrat-Medium",
-                  fontSize: 20,
-                  textAlign: "center",
-                  // width: "50%",
-                },
-              ]}
-            >
-              {data.title}
-            </Text>
-            <View
-              style={{
-                backgroundColor: "rgba(255,255,255, 0.1)",
-                paddingVertical: 20,
-                marginVertical: 20,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  textAlign: "center",
-                  fontFamily: "Montserrat-Medium",
-                  fontSize: 16,
-                }}
-              >
+          <View style={styles.headingContainer}>
+            <Text style={styles.headingText}>{data.title}</Text>
+            <View style={styles.timeContainer}>
+              <Text style={styles.timeText}>
                 {data.startDate + " "} -{" " + data.endDate}
               </Text>
-              <Text
-                style={{
-                  color: "#fff",
-                  textAlign: "center",
-                  fontSize: 16,
-                  fontFamily: "Montserrat-Medium",
-                  marginVertical: 10,
-                }}
-              >
+              <Text style={styles.timeText}>
                 {data.startTime + " "}-{" " + data.endTime}
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "rgba(255,255,255, 0.1)",
-                paddingVertical: 10,
-                marginVertical: 20,
-              }}
-            >
-              <Image
-                style={{
-                  height: 50,
-                  width: 50,
-                  marginHorizontal: 20,
-                  alignSelf: "center",
-                }}
-                source={require("../../Assets/fb_logo.jpg")}
-              />
-              <View>
-                <Text
-                  style={{
-                    color: "#fff",
-                    textAlign: "center",
-                    fontSize: 15,
-                    marginVertical: 5,
-                    fontFamily: "Montserrat-Bold",
-                  }}
-                >
-                  ASWJ Australia
-                </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: "Montserrat-Medium",
-                    fontSize: 15,
-                  }}
-                >
-                  NSW
-                </Text>
-              </View>
-            </View>
           </View>
-          <View
-            style={{
-              justifyContent: "center",
-              backgroundColor: "rgba(255,255,255, 0.1)",
-              marginVertical: 10,
-              paddingVertical: 30,
-              marginHorizontal: 15,
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                marginHorizontal: 10,
-                fontSize: 14,
-                fontFamily: "Montserrat-Regular",
-              }}
-            >
-              Event Detail
-            </Text>
-
-            <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
-              <Entypo
-                color={"#00A300"}
-                size={15}
-                name={"users"}
-                style={{
-                  alignSelf: "center",
-                  textAlign: "center",
-                }}
-              />
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 15,
-                  marginHorizontal: 5,
-                  fontFamily: "Montserrat-Regular",
-                  marginVertical: 10,
-                }}
-              >
-                {data.speakers}
-              </Text>
+          <View style={styles.headingContainer}>
+            <Text style={styles.eventDetailText}>Event Detail</Text>
+            <View style={styles.speakersView}>
+              <Entypo color={colors.primary} size={15} name={"users"} />
+              <Text style={styles.speakersText}>{data.speakers}</Text>
             </View>
-            <Text
-              style={{
-                color: "#fff",
-                marginHorizontal: 10,
-                fontSize: 14,
-                fontFamily: "Montserrat-Regular",
-              }}
-            >
-              {data.description}{" "}
-            </Text>
+            <Text style={styles.descText}>{data.description} </Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "rgba(255,255,255, 0.1)",
-              flexDirection: "row",
-              marginHorizontal: 15,
-              marginVertical: 10,
-              marginBottom: "20%",
-              paddingVertical: 5,
-            }}
-          >
+          <View style={styles.inputView}>
             <Image
-              style={{ width: 50, height: 50 }}
+              style={{ width: hp(5), height: hp(5) }}
               source={require("../../Assets/free.png")}
             />
             <FormInput
-              // label="Email"2225
-              // containerStyle={{flex:1,flexdirection:'row'}}
               placeholder={"Enter No. Members"}
               value={members}
-              placeholderTextColor={"rgba(255,255,255, 0.6)"}
-              keyboardType="email-address"
-              style={{
-                color: "#fff",
-                flex: 1,
-                fontFamily: "Montserrat-Light",
-                marginVertical: Platform.OS == "ios" ? 18 : null,
-              }}
+              placeholderTextColor={colors.black}
+              keyboardType="decimal-pad"
+              style={styles.inputStyles}
               text_input_container={{ width: "240%" }}
               onChangeText={(Email) => {
-                setError(""), onChangemembers(Email.trim());
+                onChangemembers(Email.trim());
               }}
             />
           </View>
@@ -444,41 +160,156 @@ const EventDetail = ({ navigation, route }) => {
         <TouchableOpacity
           onPress={() => submit()}
           disabled={flagForButton ? true : false}
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
+          style={styles.bottomButton}
         >
           <Text
-            style={{
-              // backgroundColor: "rgba(255,255,255, 0.1)",
-              backgroundColor: flagForButton ? "#99FF99" : "#00A300",
-              padding: 18,
-              color: "#fff",
-              fontWeight: "bold",
-              textAlign: "center",
-              fontSize: 18,
-            }}
+            style={[
+              {
+                backgroundColor: flagForButton
+                  ? colors.primaryLight
+                  : colors.primary,
+              },
+              styles.bottomButtonText,
+            ]}
           >
             {flagForButton ? "Registered" : "Register"}
           </Text>
-          {/* <Btn
-            text={flagForButton ? "Registered" : "Register"}
-            onPress={() => {
-              submit();
-            }}
-            containerStyle={{
-              backgroundColor: "#00A300",
-              padding: 18,
-            }}
-            textStyle={{ color: "#fff", fontWeight: "bold" }}
-          /> */}
         </TouchableOpacity>
       </BackGround>
     </SafeAreaView>
   );
 };
 
+const styles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    borderRadius: 15,
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(1,1,1,0.6)",
+    ...StyleSheet.absoluteFillObject,
+  },
+  modalMainView: {
+    width: wp(95),
+    backgroundColor: colors.white,
+    borderRadius: hp(2),
+  },
+  modalTopView: {
+    backgroundColor: colors.black,
+    borderTopRightRadius: hp(2),
+    borderTopLeftRadius: hp(2),
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(5),
+    marginBottom: hp(2),
+  },
+  unauthorizedText: {
+    color: colors.white,
+    fontSize: hp(2),
+    letterSpacing: 1,
+    fontFamily: CustomFonts.bold,
+  },
+  unauthorizedLoginText: {
+    fontFamily: CustomFonts.light,
+    marginHorizontal: wp(5),
+    marginVertical: hp(2),
+    color: colors.black,
+  },
+  btnContainer: {
+    backgroundColor: colors.primary,
+    paddingVertical: hp(2),
+    borderBottomLeftRadius: hp(2),
+    borderBottomRightRadius: hp(2),
+  },
+  btnText: {
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.6),
+    alignSelf: "center",
+  },
+  topImage: {
+    height: hp(10),
+    width: wp(90),
+    backgroundColor: colors.white,
+    alignSelf: "center",
+    marginVertical: wp(3),
+  },
+  headingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255, 0.1)",
+    marginVertical: hp(0.5),
+  },
+  headingText: {
+    color: colors.primary,
+    fontFamily: CustomFonts.bold,
+    fontSize: hp(2.2),
+    marginVertical: hp(2),
+  },
+  timeContainer: {
+    paddingVertical: hp(1),
+    alignItems: "center",
+  },
+  timeText: {
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(2),
+    marginVertical: hp(0.5),
+  },
+  eventDetailText: {
+    color: colors.primary,
+    fontSize: hp(2),
+    fontFamily: CustomFonts.bold,
+  },
+  speakersView: {
+    flexDirection: "row",
+    paddingVertical: hp(1),
+    alignItems: "center",
+  },
+  speakersText: {
+    color: colors.white,
+    fontSize: hp(2),
+    marginHorizontal: wp(2),
+    fontFamily: CustomFonts.regular,
+  },
+  descText: {
+    color: colors.white,
+    fontSize: hp(2),
+    fontFamily: CustomFonts.regular,
+    marginVertical: hp(2),
+  },
+  inputView: {
+    flex: 1,
+    backgroundColor: colors.white,
+    flexDirection: "row",
+    marginVertical: hp(1),
+    padding: hp(1),
+    alignItems: "center",
+    marginBottom: hp(8),
+  },
+  inputStyles: {
+    color: colors.black,
+    flex: 1,
+    fontFamily: CustomFonts.regular,
+    marginVertical: Platform.OS == "ios" ? 18 : null,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    width: wp(80),
+    borderRadius: hp(1),
+    marginLeft: wp(2),
+  },
+  bottomButton: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  bottomButtonText: {
+    color: "#fff",
+    fontFamily: CustomFonts.bold,
+    fontSize: 18,
+    padding: hp(2),
+    textAlign: "center",
+  },
+});
 export default EventDetail;

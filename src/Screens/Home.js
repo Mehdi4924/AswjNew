@@ -9,13 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { hp, wp } from "../../utilis/Responsive";
 import { Vimeo } from "react-native-vimeo-iframe";
 import { CustomFonts } from "../../Theme/Fonts";
 import colors from "../../Theme/Colors";
 import YouTube from "react-native-youtube";
+import YoutubePlayer, {
+  InitialPlayerParams,
+} from "react-native-youtube-iframe";
 import { Icon } from "@rneui/base";
+import { getVideos } from "../../utilis/Api/Api_controller";
+import axios from "axios";
 
 export default function Home(props) {
   const [List, setList] = useState([
@@ -25,12 +30,12 @@ export default function Home(props) {
       videoType: "Vimeo",
     },
     {
-      videoId: "806710332",
+      videoId: "https://www.youtube.com/watch?v=SqcY0GlETPk",
       isPlaying: false,
       videoType: "Youtube",
     },
     {
-      videoId: "806710332",
+      videoId: "Y274jZs5s7s",
       isPlaying: false,
       videoType: "Youtube",
     },
@@ -45,6 +50,34 @@ export default function Home(props) {
       videoType: "Vimeo",
     },
   ]);
+  const [fetching, setFetching] = useState(false);
+  useEffect(() => {
+    getData();
+  }, []);
+  const getData = async () => {
+    setFetching(true);
+    await getVideos(1)
+      .then((res) => {
+        console.log(
+          "success getting videos",
+          JSON.stringify(res.data, null, 4)
+        );
+      })
+      .catch((err) => {
+        console.log("error getting videos", err);
+      })
+      .finally(function () {
+        setFetching(false);
+      });
+
+    // await axios
+    //   .get(
+    //     "https://www.googleapis.com/youtube/v3/search?key={AIzaSyBVu5OTBmotsUFX6GauJRrCrA9LwUhip8Q}&channelId={@programmingwithmosh}&part=snippet,id&order=date&maxResults=20"
+    //   )
+    //   .then((res) => {
+    //     console.log(res);
+    //   });
+  };
   return (
     <ImageBackground
       source={require("../../Assets/Dark_Bg_ASWJ.png")}
@@ -77,23 +110,26 @@ export default function Home(props) {
         renderItem={({ item, index }) => {
           return (
             <View style={styles.listContainer} key={index}>
-              <Vimeo
-                style={styles.playerStyles}
-                key={index}
-                videoId={item.videoId}
-                loop={false}
-                autoPlay={item.isPlaying}
-                controls={true}
-                speed={false}
-                time={"0m0s"}
-              />
-              {/* <YouTube
-                videoId={"KVZ-P-ZI6W4"}
-                apiKey="AIzaSyBVu5OTBmotsUFX6GauJRrCrA9LwUhip8Q"
-                play={true}
-                onError
-                style={{ height: hp(33) }}
-              /> */}
+              {item.videoType == "Vimeo" ? (
+                <Vimeo
+                  style={styles.playerStyles}
+                  key={index}
+                  videoId={item.videoId}
+                  loop={false}
+                  autoPlay={false}
+                  controls={true}
+                  speed={false}
+                  time={"0m0s"}
+                />
+              ) : (
+                <YoutubePlayer
+                  height={hp(30)}
+                  width={wp(95)}
+                  forceAndroidAutoplay={false}
+                  videoId={"Y274jZs5s7s"}
+                  onChangeState={(state) => console.log(state)}
+                />
+              )}
               <Text style={styles.listHeadingStyles}>
                 The Disease And The Cure, Part 46 - Farhan Bin Rafee
               </Text>
@@ -140,9 +176,7 @@ const styles = StyleSheet.create({
   listHeadingStyles: {
     fontFamily: CustomFonts.bold,
     color: colors.white,
-    width: wp(90),
-    textAlign: "center",
-    textAlignVertical: "center",
+    width: wp(95),
   },
   listBottomLine: {
     width: wp(100),

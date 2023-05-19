@@ -13,7 +13,6 @@ import {
 import { Btn } from "../../utilis/Btn";
 import MapView, { Marker } from "react-native-maps";
 import BackGround from "../Components/Background";
-import BackButton from "../Components/BackButton";
 import MapViewDirections from "react-native-maps-directions";
 import database from "@react-native-firebase/database";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -139,20 +138,15 @@ const FindMyMasjid = (props) => {
         </View>
         <TouchableOpacity
           onPress={() => setshowModal2(true)}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 30,
-            marginVertical: 10,
-            paddingVertical: 15,
-            borderWidth: 3,
-            borderBottomColor:
-              text == "Nearby AWSJ Centers"
-                ? "rgba(255, 0, 0,0.4)"
-                : "transparent",
-            borderColor: "transparent",
-          }}
+          style={[
+            styles.searchView,
+            {
+              borderBottomColor:
+                text == "Nearby AWSJ Centers"
+                  ? "rgba(255, 0, 0,0.4)"
+                  : "transparent",
+            },
+          ]}
         >
           <Text
             style={{ color: "rgba(255,255,255, 0.6)", marginHorizontal: 15 }}
@@ -189,65 +183,23 @@ const FindMyMasjid = (props) => {
             apikey={GOOGLE_MAPS_APIKEY}
           />
         </MapView>
-        <View style={{ position: "absolute", bottom: 0, right: 0, left: 0 }}>
+        <View style={styles.bottomButtonsContainer}>
           <Btn
             onPress={() => navigation.navigate("PrayerTimes")}
             text="GET PRAYERS TIME"
-            containerStyle={{
-              backgroundColor: "#00A300",
-              padding: 18,
-              marginVertical: 0,
-            }}
-            textStyle={[
-              style.thickHeader,
-              {
-                color: "white",
-                textAlign: "center",
-                fontFamily: "Montserrat-ExtraBold",
-                fontSize: 13,
-                letterSpacing: 1,
-              },
-            ]}
+            containerStyle={styles.markerContainer}
+            textStyle={[style.thickHeader, styles.markerText]}
           />
         </View>
-
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={showModal2}
-          style={{}}
-          onRequestClose={() => {}}
-        >
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <View
-              style={{
-                marginHorizontal: 25,
-                backgroundColor: "white",
-                maxHeight: "45%",
-                borderRadius: 20,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "rgba(128,128,128,0.1)",
-                  paddingVertical: 20,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                  borderWidth: 1,
-                  borderBottomColor: "rgba(0, 0, 0,0.2)",
-                  borderColor: "transparent",
-                }}
-              />
+        <Modal animationType="fade" transparent={true} visible={showModal2}>
+          <View style={styles.optionsContainer}>
+            <View style={styles.optionsMainView}>
+              <View style={styles.optionsSubView} />
               <FlatList
                 data={arr}
                 extraData={refresh}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    // onPress={() => {
-                    //   item.check = item.check ? !item.check : true;
-                    //   setMasjidd(item.check, item.name, item.hashNumber);
-                    //   setRefresh(!refresh);
-                    // }}
                     onPress={() => {
                       if (item.check == true) {
                         item.check = false;
@@ -264,94 +216,36 @@ const FindMyMasjid = (props) => {
                           check.push(item);
                         }
                       }
-
                       setRefresh(!refresh);
                     }}
-                    style={{ flexDirection: "row", marginVertical: 10 }}
+                    style={styles.listItems}
                   >
                     <FontAwesome
-                      color={item.check ? "#00A300" : "rgba(0,0,0,0.3)"}
-                      size={20}
+                      color={item.check ? colors.primary : "rgba(0,0,0,0.3)"}
+                      size={hp(2.5)}
                       name={item.check ? "dot-circle-o" : "circle-o"}
-                      style={{ textAlign: "right", marginHorizontal: 20 }}
+                      style={styles.iconStyles}
                     />
-                    <Text
-                      style={{
-                        alignSelf: "center",
-                        color: "#000",
-                        fontFamily: "Montserrat-Regular",
-                        fontSize: 15,
-                      }}
-                    >
-                      {item.name}
-                    </Text>
-                    {/* <MaterialCommunityIcons
-                      name={
-                        item.check
-                          ? "checkbox-marked"
-                          : "checkbox-blank-outline"
-                      }
-                      size={20}
-                      color={item.check ? "#00A300" : "#000"}
-                      style={{ marginHorizontal: 20 }}
-                    />
-                    <Text style={{ alignSelf: "center", color: "#000" }}>
-                      {item.name}
-                    </Text> */}
+                    <Text style={styles.itemText}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
               />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={styles.modalButtonView}>
                 <Btn
                   text="CANCEL"
                   onPress={() => {
                     setshowModal2(false);
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    // marginVertical: 20,
-                    width: "49.7%",
-                    borderBottomLeftRadius: 20,
-                  }}
-                  textStyle={[
-                    style.thickHeader,
-                    {
-                      color: "white",
-                      textAlign: "center",
-                      fontFamily: "Montserrat-Medium",
-                      fontSize: 13,
-                      letterSpacing: 1,
-                    },
-                  ]}
+                  containerStyle={styles.buttonContainer}
+                  textStyle={[style.thickHeader, styles.buttonText]}
                 />
                 <Btn
                   text="OK"
-                  onPress={() => onPressok()}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    width: "49.7%",
-                    // marginVertical: 20,
-                    borderBottomRightRadius: 20,
-                  }}
-                  textStyle={[
-                    style.thickHeader,
-                    {
-                      color: "white",
-                      textAlign: "center",
-                      fontFamily: "Montserrat-Medium",
-                      fontSize: 13,
-                      letterSpacing: 1,
-                    },
-                  ]}
+                  onPress={() =>
+                    check.length > 0 ? onPressok() : setshowModal2(false)
+                  }
+                  containerStyle={styles.rightButtonContainer}
+                  textStyle={[style.thickHeader, styles.buttonText]}
                 />
               </View>
             </View>
@@ -380,6 +274,81 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: wp(3),
+  },
+  searchView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255,255,255, 0.1)",
+    marginHorizontal: 30,
+    marginVertical: 10,
+    paddingVertical: 15,
+    borderWidth: 3,
+    borderColor: "transparent",
+  },
+  bottomButtonsContainer: {
+    position: "absolute",
+    bottom: hp(7),
+    right: 0,
+    left: 0,
+  },
+  markerContainer: {
+    backgroundColor: colors.primary,
+    padding: wp(2),
+    marginVertical: 0,
+  },
+  markerText: {
+    color: colors.white,
+    textAlign: "center",
+    fontFamily: CustomFonts.bold,
+    fontSize: hp(1.8),
+    letterSpacing: 1,
+  },
+  optionsContainer: { flex: 1, justifyContent: "center" },
+  optionsMainView: {
+    marginHorizontal: wp(10),
+    backgroundColor: colors.white,
+    maxHeight: hp(45),
+    borderRadius: 20,
+  },
+  optionsSubView: {
+    backgroundColor: "rgba(128,128,128,0.1)",
+    paddingVertical: hp(3),
+    borderTopRightRadius: hp(3),
+    borderTopLeftRadius: hp(3),
+    borderWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0,0.2)",
+    borderColor: "transparent",
+  },
+  listItems: { flexDirection: "row", marginVertical: hp(1.5) },
+  itemText: {
+    alignSelf: "center",
+    color: colors.black,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.8),
+  },
+  iconStyles: { textAlign: "right", marginHorizontal: wp(5) },
+  modalButtonView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buttonContainer: {
+    backgroundColor: colors.primary,
+    paddingVertical: wp(4.5),
+    width: wp(40.5),
+    borderBottomLeftRadius: hp(4),
+  },
+  buttonText: {
+    color: colors.white,
+    textAlign: "center",
+    fontFamily: CustomFonts.bold,
+    fontSize: hp(1.8),
+    letterSpacing: 1,
+  },
+  rightButtonContainer: {
+    backgroundColor: colors.primary,
+    paddingVertical: wp(4.5),
+    width: wp(40.5),
+    borderBottomRightRadius: hp(4),
   },
 });
 export default FindMyMasjid;

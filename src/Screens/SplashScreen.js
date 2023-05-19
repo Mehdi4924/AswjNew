@@ -11,13 +11,11 @@ const SplashScreen = ({ navigation }) => {
   const [guest, setguest] = useState();
 
   useEffect(() => {
-    setTimeout(async() => {
+    setTimeout(async () => {
       let v = await AsyncStorage.getItem("Guest");
-      // alert(v)
-// console.log(guest);
+      console.log("v==>>", v);
       firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-          console.log(user);
           let data = "";
 
           database()
@@ -31,16 +29,15 @@ const SplashScreen = ({ navigation }) => {
                 navigation.navigate("Home");
               }
             });
-        }else if(v==1){
+        } else if (v == 1) {
           navigation.navigate("Home");
-
         } else {
           navigation.navigate("Login");
         }
       });
     }, 3000);
   }, []);
-  
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Image

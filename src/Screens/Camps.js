@@ -6,46 +6,23 @@ import {
   View,
   Image,
   FlatList,
-  TouchableHighlight,
-  Platform,
-  TextInput,
-  ImageBackground,
-  Dimensions,
-  Modal,
+  StyleSheet,
 } from "react-native";
-import { FormInput } from "../../utilis/Text_input";
-import { Btn } from "../../utilis/Btn";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Feather from "react-native-vector-icons/Feather";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import BackGround from "../Components/Background";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import BackButton from "../Components/BackButton";
 import database from "@react-native-firebase/database";
-import { Update_Profile_Validations } from "../../utilis/validation";
-import moment from "moment";
 import style from "../../Theme/styles";
-import { ScrollView } from "react-native-gesture-handler";
+import colors from "../../Theme/Colors";
+import { hp, wp } from "../../utilis/Responsive";
+import { CustomFonts } from "../../Theme/Fonts";
+import { Icon } from "@rneui/base";
+
 const Camps = ({ navigation, route }) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const [Name, onChangeName] = useState("");
-  const [date, setDate] = useState("");
-  const [errors, setError] = useState(null);
-  const [expTIme, setExpTime] = useState(null);
-  const [text, settext] = useState("Select Mosques");
-  const [isloading, setisloading] = useState(false);
-  const [inputBorder, setinputBorder] = useState(false);
-  const [search, setsearch] = useState("");
-  const [showModal, setshowModal] = useState(false);
-  const [searchIt, setsearchIt] = useState(false);
   const [arr, setarr] = useState([]);
   const [male, setmale] = useState(false);
   const [female, setfemale] = useState(false);
   const [showModal2, setshowModal2] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [fetching, setFetching] = useState(false);
-
   const [list, setlist] = useState([
     {
       title: "ASWJ Anual Conference",
@@ -73,7 +50,6 @@ const Camps = ({ navigation, route }) => {
       text: "ASWJ Album",
     },
   ]);
-
   const findd = (text2) => {
     if (text2 == "") {
       setlist(list);
@@ -107,7 +83,7 @@ const Camps = ({ navigation, route }) => {
     database()
       .ref("/Conference List")
       .on("value", (snapshot) => {
-        console.log('data in the list',snapshot);
+        console.log("data in the list", snapshot);
         let data = snapshot.val();
         if (arr.length > 0) {
         } else {
@@ -153,31 +129,26 @@ const Camps = ({ navigation, route }) => {
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
-        <BackButton
-          title={"ASWJ Main Events"}
-          onPressBack={() => navigation.navigate("Home")}
-        />
-        {/* <ScrollView> */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon
+              type="material-community"
+              name="chevron-left"
+              size={hp(4)}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>ASWJ Main Events</Text>
+          <View />
+        </View>
         <View style={{ marginTop: 5, flex: 1 }}>
           <FlatList
             data={arr}
-            // inverted={true}
-            // style={{flex: 1}}
-            // contentContainerStyle={{flex:1}}
             onRefresh={() => test()}
             refreshing={fetching}
             extraData={refresh}
             renderItem={({ item, key }) => (
-              <View
-                style={{
-                  // flex:1,
-                  justifyContent: "flex-start",
-                  backgroundColor: "rgba(255,255,255, 0.1)",
-                  marginVertical: 10,
-                  paddingVertical: 15,
-                  marginHorizontal: 15,
-                }}
-              >
+              <View style={styles.listContainer}>
                 <TouchableOpacity
                   style={{ marginHorizontal: 20 }}
                   onPress={() =>
@@ -187,36 +158,9 @@ const Camps = ({ navigation, route }) => {
                     })
                   }
                 >
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontSize: 15,
-                      borderRadius: 100,
-                      marginVertical: 2,
-                      fontFamily: "Montserrat-Bold",
-                    }}
-                  >
-                    {item.title}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "rgba(255,255,255,0.4)",
-                      fontSize: 16,
-                      fontFamily: "Montserrat-Medium",
-                    }}
-                  >
-                    {item.start_date}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#fff",
-                      marginVertical: 2,
-                      fontSize: 15,
-                      fontFamily: "Montserrat-Regular",
-                    }}
-                  >
-                    {item.center}
-                  </Text>
+                  <Text style={styles.listTitle}>{item.title}</Text>
+                  <Text style={styles.listDate}>{item.start_date}</Text>
+                  <Text style={styles.listCenter}>{item.center}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -227,5 +171,48 @@ const Camps = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: colors.white,
+    width: wp(100),
+    height: hp(7),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerText: {
+    fontFamily: CustomFonts.bold,
+    color: colors.primary,
+    fontSize: hp(2),
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: wp(3),
+  },
+  listContainer: {
+    justifyContent: "flex-start",
+    backgroundColor: "rgba(255,255,255, 0.1)",
+    marginVertical: hp(1),
+    paddingVertical: hp(2),
+    marginHorizontal: wp(5),
+  },
+  listTitle: {
+    color: colors.white,
+    fontSize: hp(1.8),
+    fontFamily: CustomFonts.bold,
+  },
+  listDate: {
+    color: "rgba(255,255,255,0.4)",
+    fontSize: hp(1.8),
+    fontFamily: CustomFonts.regular,
+    marginVertical: hp(1),
+  },
+  listCenter: {
+    color: colors.white,
+    fontSize: hp(1.5),
+    fontFamily: CustomFonts.regular,
+  },
+});
 export default Camps;
