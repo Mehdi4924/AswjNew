@@ -17,8 +17,8 @@ import { hp, wp } from "../../utilis/Responsive";
 import { CustomFonts } from "../../Theme/Fonts";
 
 const Sessions = ({ navigation, route }) => {
-  let key = route.params.params.key;
-  let date = route.params.params.date;
+  let key = route.params.key;
+  let date = route.params.date;
   const [arr, setarr] = useState([]);
   const [refresh, setRefresh] = useState(false);
   useEffect(() => {

@@ -7,7 +7,7 @@ import style from "../../Theme/styles";
 
 const Videos = ({ navigation, route }) => {
   const [link, setLink] = useState("");
-  let id = route.params.params.id;
+  let id = route.params.id;
   let test = id.split("/");
   const [list, setlist] = useState([
     {

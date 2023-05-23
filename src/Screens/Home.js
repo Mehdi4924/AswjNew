@@ -27,27 +27,34 @@ export default function Home(props) {
     {
       videoId: "806710332",
       isPlaying: false,
-      videoType: "Vimeo",
+      type: "Vimeo",
+    },
+    {
+      created_By: "2021-06-28T10:14:20.854Z",
+      hashNumber: "-McEl9ZAJCUZw_IGKnDE",
+      id: 19,
+      name: "Supplication for breaking fast	",
+      type: "Dua",
     },
     {
       videoId: "https://www.youtube.com/watch?v=SqcY0GlETPk",
       isPlaying: false,
-      videoType: "Youtube",
+      type: "Youtube",
     },
     {
       videoId: "Y274jZs5s7s",
       isPlaying: false,
-      videoType: "Youtube",
+      type: "Youtube",
     },
     {
       videoId: "806710332",
       isPlaying: false,
-      videoType: "Vimeo",
+      type: "Vimeo",
     },
     {
       videoId: "806710332",
       isPlaying: false,
-      videoType: "Vimeo",
+      type: "Vimeo",
     },
   ]);
   const [fetching, setFetching] = useState(false);
@@ -110,30 +117,71 @@ export default function Home(props) {
         renderItem={({ item, index }) => {
           return (
             <View style={styles.listContainer} key={index}>
-              {item.videoType == "Vimeo" ? (
-                <Vimeo
-                  style={styles.playerStyles}
-                  key={index}
-                  videoId={item.videoId}
-                  loop={false}
-                  autoPlay={false}
-                  controls={true}
-                  speed={false}
-                  time={"0m0s"}
-                />
+              {item.type == "Dua" ? (
+                <>
+                  <TouchableOpacity
+                    style={styles.listSubView}
+                    onPress={() =>
+                      navigation.navigate("Duas2", { type: item.id })
+                    }
+                  >
+                    <Text style={styles.itemNumberText}>Dua</Text>
+                    <Text style={styles.listText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </>
               ) : (
-                <YoutubePlayer
-                  height={hp(30)}
-                  width={wp(95)}
-                  forceAndroidAutoplay={false}
-                  videoId={"Y274jZs5s7s"}
-                  onChangeState={(state) => console.log(state)}
-                />
+                <>
+                  <Text style={styles.listHeadingStyles}>
+                    The Disease And The Cure, Part 46 - Farhan Bin Rafee
+                  </Text>
+                  {item.type == "Vimeo" ? (
+                    <Vimeo
+                      style={styles.playerStyles}
+                      key={index}
+                      videoId={item.videoId}
+                      loop={false}
+                      autoPlay={false}
+                      controls={true}
+                      speed={false}
+                      time={"0m0s"}
+                    />
+                  ) : (
+                    <YoutubePlayer
+                      height={hp(27)}
+                      width={wp(93)}
+                      forceAndroidAutoplay={false}
+                      videoId={"Y274jZs5s7s"}
+                      onChangeState={(state) => console.log(state)}
+                    />
+                  )}
+                  <View style={styles.listBottomContainer}>
+                    <View style={styles.shareContainer}>
+                      <Icon
+                        name={item.type == "Vimeo" ? "vimeo" : "youtube"}
+                        type="material-community"
+                        size={hp(1.8)}
+                        style={styles.iconStyles}
+                        color={colors.white}
+                      />
+                      <Text style={styles.shareText}>
+                        {item.type == "Vimeo" ? "Vimeo" : "YouTube"}
+                      </Text>
+                    </View>
+                    <View style={styles.shareContainer}>
+                      <Text style={styles.shareText}>Share This Video</Text>
+                      <TouchableOpacity onPress={() => null}>
+                        <Icon
+                          name="share-variant"
+                          type="material-community"
+                          size={hp(1)}
+                          reverse
+                          color={colors.primary}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </>
               )}
-              <Text style={styles.listHeadingStyles}>
-                The Disease And The Cure, Part 46 - Farhan Bin Rafee
-              </Text>
-              <View style={styles.listBottomLine} />
             </View>
           );
         }}
@@ -165,24 +213,66 @@ const styles = StyleSheet.create({
   },
   //list styles
   listContainer: {
-    width: wp(100),
+    width: wp(95),
     alignItems: "center",
+    alignSelf: "center",
+    backgroundColor: "rgba(255,255,255,0.7)",
+    marginVertical: hp(0.5),
+    paddingVertical: hp(1),
+    borderRadius: 5,
   },
   playerStyles: {
     backgroundColor: "transparent",
-    width: wp(100),
-    height: hp(30),
+    width: wp(95),
+    height: hp(27),
   },
   listHeadingStyles: {
     fontFamily: CustomFonts.bold,
-    color: colors.white,
-    width: wp(95),
+    color: colors.black,
+    width: wp(90),
+    marginBottom: hp(1),
   },
-  listBottomLine: {
-    width: wp(100),
-    borderBottomWidth: 1,
-    borderBottomColor: colors.white,
-    marginTop: hp(0.5),
-    marginBottom: hp(2),
+  listBottomContainer: {
+    width: wp(90),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  shareContainer: {
+    width: wp(40),
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconStyles: {
+    width: hp(3),
+    height: hp(3),
+    borderRadius: hp(3),
+    marginRight: wp(2),
+    backgroundColor: colors.black,
+    justifyContent: "center",
+  },
+  shareText: {
+    fontFamily: CustomFonts.regular,
+    color: colors.black,
+  },
+  listSubView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: wp(90),
+    alignItems: "center",
+  },
+  itemNumberText: {
+    borderRadius: 100,
+    backgroundColor: colors.black,
+    color: colors.white,
+    fontSize: hp(1.5),
+    padding: wp(2),
+    fontFamily: CustomFonts.bold,
+  },
+  listText: {
+    color: colors.black,
+    width: wp(75),
+    fontSize: hp(2),
+    fontFamily: CustomFonts.regular,
   },
 });

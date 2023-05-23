@@ -17,7 +17,7 @@ import style from "../../Theme/styles";
 import { ScrollView } from "react-native-gesture-handler";
 
 const Duas2 = ({ navigation, route }) => {
-  let type = route.params.params.type;
+  let type = route.params.type;
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const [arr, setarr] = useState([]);

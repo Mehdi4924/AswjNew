@@ -26,7 +26,8 @@ import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
 
 const EventDetail = ({ navigation, route }) => {
-  let data = route.params.params.data;
+  let data = route?.params?.data;
+  console.log("route details", data);
   const [members, onChangemembers] = useState("");
   const [flagForButton, setFlagForButton] = useState(false);
   const [uid, setUid] = useState();
@@ -233,6 +234,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignSelf: "center",
     marginVertical: wp(3),
+    borderRadius: 10,
   },
   headingContainer: {
     alignItems: "center",
@@ -277,6 +279,7 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     fontFamily: CustomFonts.regular,
     marginVertical: hp(2),
+    paddingHorizontal: wp(5),
   },
   inputView: {
     flex: 1,

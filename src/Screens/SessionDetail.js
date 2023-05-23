@@ -7,8 +7,8 @@ import style from '../../Theme/styles'
 const SessionDetail = ({ navigation, route }) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  let data  = route.params.params.data;
-  let date  = route.params.params.date;
+  let data  = route.params.data;
+  let date  = route.params.date;
   // console.log(day);
   return (
     <SafeAreaView style={style.safeareaview}>
