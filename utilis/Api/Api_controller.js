@@ -4,7 +4,6 @@ const getVideos = async (page) => {
   const data = await get_request({
     target: "/users/94972939/videos?per_page=10&&page=" + page,
   });
-  console.log("response getting videos", JSON.stringify(data, null, 4));
   return data;
 };
 const ForgetPassword = async (body) => {
