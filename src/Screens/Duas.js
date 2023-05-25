@@ -7,6 +7,7 @@ import {
   FlatList,
   TextInput,
   StyleSheet,
+  Image,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -26,23 +27,6 @@ const Duas = ({ navigation }) => {
   const [refresh, setRefresh] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [data2, setData2] = useState([]);
-
-  const findd = (text2) => {
-    if (text2 == "") {
-      setarr(data2);
-    }
-    let text = text2.toLowerCase();
-    let trucks = arr;
-    let filteredName = trucks.filter((item) => {
-      return item.name.toLowerCase().includes(text);
-    });
-    if (!text || text === "") {
-      setarr(data2);
-    } else if (!Array.isArray(filteredName) && !filteredName.length) {
-    } else if (Array.isArray(filteredName)) {
-      setarr(filteredName);
-    }
-  };
 
   useEffect(() => {
     if (arr.length == 0) {
@@ -68,37 +52,60 @@ const Duas = ({ navigation }) => {
     setData2(arr);
     setFetching(false);
   };
+  const findd = (text2) => {
+    if (text2 == "") {
+      setarr(data2);
+    }
+    let text = text2.toLowerCase();
+    let trucks = arr;
+    let filteredName = trucks.filter((item) => {
+      return item.name.toLowerCase().includes(text);
+    });
+    if (!text || text === "") {
+      setarr(data2);
+    } else if (!Array.isArray(filteredName) && !filteredName.length) {
+    } else if (Array.isArray(filteredName)) {
+      setarr(filteredName);
+    }
+  };
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
-        <View style={styles.searchView}>
+        <View style={styles.header}>
+          <Image
+            source={require("../../Assets/fb_logo.jpg")}
+            style={{ height: hp(6), width: wp(15) }}
+            resizeMode="contain"
+          />
           {searchIt ? (
-            <TouchableOpacity style={styles.searchBar}>
-              <FontAwesome5 color={colors.black} size={hp(2)} name={"search"} />
+            <View style={styles.searchBar}>
+              <FontAwesome5
+                color={colors.primary}
+                size={hp(2)}
+                name={"search"}
+              />
               <TextInput
                 placeholderTextColor={colors.black}
                 placeholder={"Search"}
                 value={search}
                 style={styles.searchInputStyles}
-                onChangeText={(Email) => {
-                  setsearch(Email), findd(Email);
+                onChangeText={(t) => {
+                  setsearch(t), findd(t);
                 }}
               />
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.headerContainer}>
-              <Text style={[style.thickHeader, styles.headerStyles]}>
-                Duas{" "}
-              </Text>
-              <FontAwesome
-                onPress={() => setsearchIt(true)}
-                color={"#fff"}
-                size={20}
-                name={"search"}
-                style={styles.searchIcon}
-              />
             </View>
+          ) : (
+            <>
+              <Text style={styles.headerText}>ASWJ-Home</Text>
+            </>
           )}
+          <FontAwesome
+            onPress={() => setsearchIt(!searchIt)}
+            color={colors.primary}
+            size={hp(3)}
+            name={searchIt ? "search-minus" : "search"}
+            style={styles.searchIcon}
+          />
         </View>
         <FlatList
           data={arr}
@@ -125,19 +132,35 @@ const Duas = ({ navigation }) => {
   );
 };
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: colors.white,
+    width: wp(100),
+    height: hp(7),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerText: {
+    fontFamily: CustomFonts.bold,
+    color: colors.primary,
+    fontSize: hp(2),
+    width: wp(70),
+    textAlign: "center",
+  },
   searchView: {
     flexDirection: "row",
     paddingVertical: wp(2),
     backgroundColor: "rgba(112,128,144,0.04)",
   },
   searchBar: {
-    flex: 1,
-    backgroundColor: colors.white,
-    marginHorizontal: wp(5),
-    paddingHorizontal: wp(5),
-    maxHeight: hp(8),
+    height: hp(6),
+    width: wp(70),
     flexDirection: "row",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 5,
+    paddingHorizontal: wp(2),
   },
   searchInputStyles: {
     color: colors.black,
@@ -155,17 +178,17 @@ const styles = StyleSheet.create({
   searchIcon: { flex: 1, textAlign: "right", marginHorizontal: wp(4) },
   listContainer: {
     flexDirection: "row",
-    backgroundColor: "rgba(255,255,255, 0.1)",
+    backgroundColor: "rgba(255,255,255, 0.2)",
     marginVertical: hp(1),
     paddingVertical: wp(5),
   },
   listSubView: {
     borderRadius: 100,
-    backgroundColor: "rgba(255,255,255, 0.1)",
+    backgroundColor: colors.white,
     marginHorizontal: wp(5),
   },
   itemNumberText: {
-    color: colors.white,
+    color: colors.primary,
     fontSize: hp(1.5),
     padding: wp(5),
     fontFamily: CustomFonts.bold,

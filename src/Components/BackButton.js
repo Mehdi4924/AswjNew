@@ -8,6 +8,7 @@ import {
   Modal,
   FlatList,
   StyleSheet,
+  Image,
 } from "react-native";
 import PropTypes from "prop-types";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -132,19 +133,29 @@ class BackButton extends React.Component {
   };
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={this.props.onPressBack}
-          style={styles.backButton}
-        >
-          <MaterialIcons
-            color={colors.white}
-            size={hp(3)}
-            name={"keyboard-arrow-left"}
+      <View style={[styles.container, this.props.containerStyles]}>
+        {!this.props.backIcon ? (
+          <TouchableOpacity
+            onPress={this.props.onPressBack}
+            style={styles.backButton}
+          >
+            <MaterialIcons
+              color={colors.white}
+              size={hp(3)}
+              name={"keyboard-arrow-left"}
+            />
+            <Text style={[style.forgetText, { fontSize: 15 }]}>Back </Text>
+          </TouchableOpacity>
+        ) : (
+          <Image
+            source={require("../../Assets/fb_logo.jpg")}
+            style={{ height: hp(5), width: wp(10) }}
+            resizeMode="contain"
           />
-          <Text style={[style.forgetText, { fontSize: 15 }]}>Back </Text>
-        </TouchableOpacity>
-        <Text style={[style.thickHeader, styles.headerText]}>
+        )}
+        <Text
+          style={[style.thickHeader, styles.headerText, this.props.headerText]}
+        >
           {this.props.title}{" "}
         </Text>
         {this.props.searchIconName ? (
@@ -158,7 +169,7 @@ class BackButton extends React.Component {
         {this.props.filter ? (
           <Octicons
             onPress={() => this.setState({ visible: !this.state.visible })}
-            color={"#fff"}
+            color={this?.props?.filterIconColor || colors.white}
             size={25}
             name={"settings"}
             style={styles.filterIcon}

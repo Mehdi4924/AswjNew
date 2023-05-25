@@ -211,7 +211,6 @@ export default function Home(props) {
         <View style={styles.headerRight}>
           <TouchableOpacity
             onPress={() => props.navigation.navigate("Settings")}
-            // onPress={() => setFetching(!fetching)}
           >
             <Icon
               type="material-community"

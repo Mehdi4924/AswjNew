@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   Linking,
+  Text,
 } from "react-native";
 import BackGround from "../Components/Background";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -26,6 +27,7 @@ import style from "../../Theme/styles";
 import BackButton from "../Components/BackButton";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
+import { CustomFonts } from "../../Theme/Fonts";
 const setupIfNecessary = async () => {
   const currentTrack = await TrackPlayer.getCurrentTrack();
   if (currentTrack !== null) {
@@ -66,10 +68,15 @@ const Radio = ({ navigation }) => {
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
-        <BackButton
-          title={"Radio"}
-          onPressBack={() => navigation.navigate("Home")}
-        />
+        <View style={styles.header}>
+          <Image
+            source={require("../../Assets/fb_logo.jpg")}
+            style={{ height: hp(6), width: wp(15) }}
+            resizeMode="contain"
+          />
+          <Text style={styles.headerText}>ASWJ-Home</Text>
+          <View />
+        </View>
         <Image
           source={require("../../Assets/AlBayan.png")}
           style={styles.radioImage}
@@ -161,13 +168,26 @@ const Radio = ({ navigation }) => {
 export default Radio;
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: colors.white,
+    width: wp(100),
+    height: hp(7),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerText: {
+    fontFamily: CustomFonts.bold,
+    color: colors.primary,
+    fontSize: hp(2),
+  },
   wrapper: {
     flex: 1,
     height: "50%",
     marginBottom: 50,
   },
   text: {
-    color: "#00A300",
+    color: colors.primary,
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",

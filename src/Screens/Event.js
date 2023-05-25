@@ -132,6 +132,12 @@ const Events = ({ navigation }) => {
           onPressBack={() => navigation.navigate("Home")}
           filter={true}
           TestingFunc={pull_data}
+          backIcon
+          containerStyles={styles.backButtonContainer}
+          headerText={{
+            color: colors.primary,
+          }}
+          filterIconColor={colors.primary}
         />
         <View style={{ flex: 1 }}>
           <FlatList
@@ -179,6 +185,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     padding: 16,
+  },
+  backButtonContainer: {
+    backgroundColor: colors.white,
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(1),
   },
   dropdown: {
     height: 50,

@@ -118,23 +118,6 @@ export default function Settings(props) {
       <Text style={styles.eventText}>Events And Camps</Text>
       <TouchableOpacity
         style={styles.buttonContainer}
-        onPress={() => props.navigation.navigate("Events")}
-      >
-        <Image
-          source={require("../../Assets/ic_calender.png")}
-          style={{ width: wp(10), height: hp(5) }}
-          resizeMode="contain"
-        />
-        <Text style={styles.containerText}>Special Events</Text>
-        <Icon
-          type="material-community"
-          name="chevron-right"
-          size={hp(3)}
-          color={colors.white}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.buttonContainer}
         onPress={() => props.navigation.navigate("Camps")}
       >
         <Image

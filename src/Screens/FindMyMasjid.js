@@ -31,11 +31,7 @@ const FindMyMasjid = (props) => {
   const [latLng, setLatLng] = useState();
   const [check, setcheck] = useState([]);
   const [arr, setarr] = useState([]);
-  const [Mosq, setMosq] = useState([]);
-  const [MosqKey, setMosqKey] = useState([]);
-  const [Key, setKey] = useState();
   const [refresh, setRefresh] = useState(false);
-  const [Center, setCenter] = useState(false);
   const [showModal2, setshowModal2] = useState(false);
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
@@ -46,7 +42,6 @@ const FindMyMasjid = (props) => {
       test();
     }
   }, []);
-
   const getLocation = async () => {
     await LocationGetting()
       .then((res) => {
@@ -68,19 +63,6 @@ const FindMyMasjid = (props) => {
           setRefresh(!refresh);
         }
       });
-  };
-  const setMasjidd = (check, name, key) => {
-    if (check == true) {
-      Mosq.push(name);
-      MosqKey.push(key);
-      let text = Mosq.join();
-      setKey(MosqKey.join());
-      settext(text);
-    } else {
-      let index = Mosq.indexOf(name);
-      Mosq.splice(index, 1);
-      settext(Mosq);
-    }
   };
   const onPressok = () => {
     setshowModal2(false);
@@ -140,19 +122,29 @@ const FindMyMasjid = (props) => {
               longitudeDelta: 0.0421,
             }}
           >
+            <Marker coordinate={{ latitude: latitude, longitude: longitude }}>
+              <Icon
+                type="material"
+                name="location-history"
+                size={hp(5)}
+                color={colors.black}
+              />
+            </Marker>
             {!!latLng?.latitude && !!latLng?.longitude ? (
               <>
                 <Marker
-                  coordinate={{ latitude: latitude, longitude: longitude }}
-                />
-                <Marker
-                  pinColor={"blue"}
                   coordinate={{
                     latitude: latLng?.latitude,
                     longitude: latLng?.longitude,
                   }}
-                />
-
+                >
+                  <Icon
+                    name="mosque"
+                    type="font-awesome-5"
+                    size={hp(3)}
+                    color={colors.primary}
+                  />
+                </Marker>
                 <MapViewDirections
                   origin={{ latitude: latitude, longitude: longitude }}
                   destination={{

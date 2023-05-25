@@ -15,6 +15,7 @@ import { CustomFonts } from "../../Theme/Fonts";
 import colors from "../../Theme/Colors";
 import Radio from "../Screens/Radio";
 import Geolocation from "react-native-geolocation-service";
+import Events from "../Screens/Event";
 
 export default function BottomTabs() {
   const BottomTabNavigator = createBottomTabNavigator();
@@ -36,7 +37,10 @@ export default function BottomTabs() {
               <>
                 <Image
                   source={require("../../Assets/clapperboard.png")}
-                  style={{ height: hp(3) }}
+                  style={{
+                    height: hp(3),
+                    width: wp(20),
+                  }}
                   resizeMode="contain"
                 />
                 <Text
@@ -58,13 +62,13 @@ export default function BottomTabs() {
               <>
                 <Image
                   source={require("../../Assets/masjid.png")}
-                  style={{ height: hp(3) }}
+                  style={{ height: hp(3), width: wp(20) }}
                   resizeMode="contain"
                 />
                 <Text
                   style={focused ? styles.focusedTextStyles : styles.TextStyles}
                 >
-                  Find My Masjid
+                  Find Masjid
                 </Text>
               </>
             );
@@ -80,13 +84,35 @@ export default function BottomTabs() {
               <>
                 <Image
                   source={require("../../Assets/radio.png")}
-                  style={{ height: hp(3) }}
+                  style={{ height: hp(3.5), width: wp(20) }}
                   resizeMode="contain"
                 />
                 <Text
                   style={focused ? styles.focusedTextStyles : styles.TextStyles}
                 >
                   Radio
+                </Text>
+              </>
+            );
+          },
+        }}
+      />
+      <BottomTabNavigator.Screen
+        name="Events"
+        component={Events}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <>
+                <Image
+                  source={require("../../Assets/calendar.png")}
+                  style={{ height: hp(3), width: wp(20) }}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={focused ? styles.focusedTextStyles : styles.TextStyles}
+                >
+                  Events
                 </Text>
               </>
             );
@@ -102,7 +128,7 @@ export default function BottomTabs() {
               <>
                 <Image
                   source={require("../../Assets/prayer.png")}
-                  style={{ height: hp(3) }}
+                  style={{ height: hp(3), width: wp(20) }}
                   resizeMode="contain"
                 />
                 <Text
@@ -118,13 +144,6 @@ export default function BottomTabs() {
     </BottomTabNavigator.Navigator>
   );
 }
-//other components to show are
-// prayer times
-// LIve Radio
-// specialEvents
-// Campsandconference
-// lcoalmasjidtimetable
-
 const styles = StyleSheet.create({
   focusedTextStyles: {
     fontSize: hp(1.4),
