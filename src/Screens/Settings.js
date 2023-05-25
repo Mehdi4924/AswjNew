@@ -6,13 +6,76 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
 import { Icon } from "@rneui/base";
+import {
+  LoginManager,
+  AccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} from "react-native-fbsdk-next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import auth, { firebase } from "@react-native-firebase/auth";
+import { LcoationGetting } from "../../utilis/LocationGetting";
 
 export default function Settings(props) {
+  const [user, setUser] = useState();
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user == null) {
+        setUser(null);
+      } else {
+        setUser(user);
+      }
+    });
+  }, []);
+  const LogOut = async () => {
+    const token = await AccessToken.getCurrentAccessToken();
+    if (token) {
+      AccessToken.getCurrentAccessToken().then((data) => {
+        let accessToken = data.accessToken;
+        const responseInfoCallback = (error, result) => {
+          if (error) {
+            console.log(error);
+          } else {
+            LoginManager.logOut();
+          }
+        };
+        const infoRequest = new GraphRequest(
+          "/me",
+          {
+            accessToken: accessToken,
+            parameters: {
+              fields: {
+                string: "email,name,first_name,middle_name,last_name",
+              },
+            },
+          },
+          responseInfoCallback
+        );
+        new GraphRequestManager().addRequest(infoRequest).start();
+      });
+    }
+    if (user == null) {
+      await props.navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+      await AsyncStorage.setItem("Guest", "0");
+    } else {
+      auth()
+        .signOut()
+        .then(() =>
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          })
+        );
+    }
+  };
   return (
     <ImageBackground
       source={require("../../Assets/Dark_Bg_ASWJ.png")}
@@ -114,6 +177,23 @@ export default function Settings(props) {
           resizeMode="contain"
         />
         <Text style={styles.containerText}>Prayer Times</Text>
+        <Icon
+          type="material-community"
+          name="chevron-right"
+          size={hp(3)}
+          color={colors.white}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={async () => LogOut()}
+      >
+        <Image
+          source={require("../../Assets/logout.png")}
+          style={{ width: wp(10), height: hp(4) }}
+          resizeMode="contain"
+        />
+        <Text style={styles.containerText}>Logout</Text>
         <Icon
           type="material-community"
           name="chevron-right"

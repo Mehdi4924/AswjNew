@@ -17,17 +17,16 @@ import MapViewDirections from "react-native-maps-directions";
 import database from "@react-native-firebase/database";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import style from "../../Theme/styles";
-import Geolocation from "react-native-geolocation-service";
 import colors from "../../Theme/Colors";
 import { hp, wp } from "../../utilis/Responsive";
 import { CustomFonts } from "../../Theme/Fonts";
 import { Icon } from "@rneui/base";
+import { LocationGetting } from "../../utilis/LocationGetting";
+import Toast from "react-native-simple-toast";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyAizf1uimNFXUerqmfomTFsJqGmac4_GPM";
 const FindMyMasjid = (props) => {
-  const { navigation, route } = props;
-  const latitude = props.latLng.lat;
-  const longitude = props.latLng.lng;
+  const { navigation } = props;
   const [text, settext] = useState("Select Mosques");
   const [latLng, setLatLng] = useState();
   const [check, setcheck] = useState([]);
@@ -38,47 +37,25 @@ const FindMyMasjid = (props) => {
   const [refresh, setRefresh] = useState(false);
   const [Center, setCenter] = useState(false);
   const [showModal2, setshowModal2] = useState(false);
-  const origin = { latitude: 37.3318456, longitude: -122.0296002 };
-  const destination = { latitude: 37.771707, longitude: -122.4053769 };
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
 
   useEffect(() => {
+    getLocation();
     if (arr.length == 0) {
       test();
     }
   }, []);
-  useEffect(() => {
-    getLocation();
-  }, []);
+
   const getLocation = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: "Example App",
-          message: "Example App access to your location ",
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can use the location", granted);
-        getGeoLocaation();
-      } else {
-        console.log("location permission denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-  const getGeoLocaation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        console.log(position, "Pos");
-        // setLatLng(position.coords);
-      },
-      (error) => {
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
+    await LocationGetting()
+      .then((res) => {
+        setLatitude(res.coords.latitude);
+        setLongitude(res.coords.longitude);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const test = () => {
     database()
@@ -111,7 +88,6 @@ const FindMyMasjid = (props) => {
       longitude: JSON.parse(check[0].longitude),
       latitude: JSON.parse(check[0].latitude),
     });
-    setCenter(true);
   };
   return (
     <SafeAreaView style={style.safeareaview}>
@@ -154,35 +130,55 @@ const FindMyMasjid = (props) => {
             {text}
           </Text>
         </TouchableOpacity>
-        <MapView
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          {Center ? (
-            <>
-              <Marker
-                coordinate={{ latitude: latitude, longitude: longitude }}
-              />
-              <Marker
-                pinColor={"blue"}
-                coordinate={{
-                  latitude: latLng?.latitude,
-                  longitude: latLng.longitude,
-                }}
-              />
-            </>
-          ) : null}
-          <MapViewDirections
-            origin={origin}
-            destination={destination}
-            apikey={GOOGLE_MAPS_APIKEY}
-          />
-        </MapView>
+        {!!latitude && !!longitude ? (
+          <MapView
+            style={{ flex: 1 }}
+            initialRegion={{
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          >
+            {!!latLng?.latitude && !!latLng?.longitude ? (
+              <>
+                <Marker
+                  coordinate={{ latitude: latitude, longitude: longitude }}
+                />
+                <Marker
+                  pinColor={"blue"}
+                  coordinate={{
+                    latitude: latLng?.latitude,
+                    longitude: latLng?.longitude,
+                  }}
+                />
+
+                <MapViewDirections
+                  origin={{ latitude: latitude, longitude: longitude }}
+                  destination={{
+                    latitude: latLng?.latitude,
+                    longitude: latLng?.longitude,
+                  }}
+                  apikey={GOOGLE_MAPS_APIKEY}
+                  strokeWidth={2}
+                  strokeColor={colors.primary}
+                  onStart={(e) => console.log("strart getting directions", e)}
+                  onError={(e) => {
+                    if (
+                      e == "Error on GMAPS route request: NOT_FOUND" ||
+                      "Error on GMAPS route request: ZERO_RESULTS"
+                    ) {
+                      Toast.show("Directions Could Not Be Found", Toast.SHORT);
+                    }
+                  }}
+                  onReady={(e) => console.log("Ready getting directions", e)}
+                />
+              </>
+            ) : null}
+          </MapView>
+        ) : (
+          <Text style={styles.locationFetchingText}>Fetching Location</Text>
+        )}
         <View style={styles.bottomButtonsContainer}>
           <Btn
             onPress={() => navigation.navigate("PrayerTimes")}
@@ -285,14 +281,22 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "transparent",
   },
+  locationFetchingText: {
+    alignSelf: "center",
+    backgroundColor: colors.primary,
+    padding: 10,
+    borderRadius: 5,
+    color: colors.white,
+  },
   bottomButtonsContainer: {
     position: "absolute",
-    bottom: hp(7),
+    bottom: hp(10),
     right: 0,
     left: 0,
   },
   markerContainer: {
     backgroundColor: colors.primary,
+    height: hp(5),
     padding: wp(2),
     marginVertical: 0,
   },

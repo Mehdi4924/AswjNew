@@ -14,13 +14,9 @@ import { hp, wp } from "../../utilis/Responsive";
 import { Vimeo } from "react-native-vimeo-iframe";
 import { CustomFonts } from "../../Theme/Fonts";
 import colors from "../../Theme/Colors";
-import YouTube from "react-native-youtube";
-import YoutubePlayer, {
-  InitialPlayerParams,
-} from "react-native-youtube-iframe";
+import YoutubePlayer from "react-native-youtube-iframe";
 import { Icon } from "@rneui/base";
 import { getVideos } from "../../utilis/Api/Api_controller";
-import axios from "axios";
 
 export default function Home(props) {
   const [List, setList] = useState([
@@ -35,6 +31,28 @@ export default function Home(props) {
       id: 19,
       name: "Supplication for breaking fast	",
       type: "Dua",
+    },
+    {
+      address: " ",
+      category: "Others",
+      centre: "-Lh0EeivHRSJjYjkTyq6",
+      description: " ",
+      endDate: "3/21/21",
+      endTime: "3:00 PM",
+      facebook: true,
+      hashNumber: "144455004192109",
+      imageUrl: [
+        "https://firebasestorage.googleapis.com/v0/b/aswj-companion-3c915.appspot.com/o/eventImages%2F23167687_601567086704458_1965015707612405337_n.jpg?alt=media&token=900f8654-63d2-4b8c-8670-ea4ca4df1f09",
+      ],
+      latitude: -33.9366684,
+      longitude: 151.0191345,
+      registrationFee: "",
+      speakers: ["None"],
+      sponsers: ["None"],
+      startDate: "3/21/21",
+      startTime: "10:00 AM",
+      title: "ASWJ Revesby Market Day",
+      type: "Event",
     },
     {
       videoId: "https://www.youtube.com/watch?v=SqcY0GlETPk",
@@ -86,7 +104,6 @@ export default function Home(props) {
     //   });
   };
   const renderItem = useCallback(({ item, index }) => {
-    console.log("rerneder occured");
     return (
       <View style={styles.listContainer} key={index}>
         {item.type == "Dua" ? (
@@ -101,6 +118,28 @@ export default function Home(props) {
               <Text style={styles.listText}>{item.name}</Text>
             </TouchableOpacity>
           </>
+        ) : item.type == "Event" ? (
+          <TouchableOpacity
+            style={styles.eventContainer}
+            onPress={() => {
+              props.navigation.navigate("eventDetail", {
+                data: item,
+              });
+            }}
+          >
+            <Image
+              style={styles.listLogo}
+              source={
+                item?.imageUrl?.length < 1
+                  ? require("../../Assets/fb_logo.jpg")
+                  : { uri: item.imageUrl[0] }
+              }
+            />
+            <View style={{ width: "82%" }}>
+              <Text style={styles.listHeadingText}>{item.title}</Text>
+              <Text style={styles.listDate}>{item.startDate}</Text>
+            </View>
+          </TouchableOpacity>
         ) : (
           <>
             <Text style={styles.listHeadingStyles}>
@@ -157,7 +196,6 @@ export default function Home(props) {
       </View>
     );
   }, []);
-  // blob:https://player.vimeo.com/edd3161c-9dea-4a5b-a690-e7fc3131bea2
   return (
     <ImageBackground
       source={require("../../Assets/Dark_Bg_ASWJ.png")}
@@ -172,8 +210,8 @@ export default function Home(props) {
         <Text style={styles.headerText}>ASWJ-Home</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity
-            // onPress={() => props.navigation.navigate("Settings")}
-            onPress={() => setFetching(!fetching)}
+            onPress={() => props.navigation.navigate("Settings")}
+            // onPress={() => setFetching(!fetching)}
           >
             <Icon
               type="material-community"
@@ -279,6 +317,32 @@ const styles = StyleSheet.create({
     width: wp(75),
     fontSize: hp(2),
     fontFamily: CustomFonts.regular,
+  },
+  eventContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: wp(90),
+    alignItems: "center",
+  },
+  listLogo: {
+    height: hp(6),
+    width: hp(6),
+    borderRadius: hp(4),
+  },
+  listHeadingText: {
+    color: colors.black,
+    fontSize: hp(1.6),
+    fontFamily: CustomFonts.bold,
+  },
+  listDate: {
+    color: colors.black,
+    fontSize: hp(1.8),
+    fontFamily: CustomFonts.regular,
+  },
+  listViewButton: {
+    color: colors.primary,
+    fontSize: hp(1.6),
+    fontFamily: CustomFonts.bold,
   },
 });
 // Rux9r_?A_i!aZvK

@@ -141,7 +141,6 @@ const Events = ({ navigation }) => {
             contentContainerStyle={{ paddingHorizontal: wp(3) }}
             extraData={refresh}
             renderItem={({ item, key }) => {
-              console.log(item);
               return (
                 <View style={styles.listContainer}>
                   <Image

@@ -18,58 +18,25 @@ import Geolocation from "react-native-geolocation-service";
 
 export default function BottomTabs() {
   const BottomTabNavigator = createBottomTabNavigator();
-  const [latLng, setLatLng] = useState({ lat: 31.5520344, lng: 74.3498515 });
-  useEffect(() => {
-    getLocation();
-  }, []);
-  const getLocation = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: "Aswj",
-          message: "Aswj wants to access to your location ",
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getGeoLocaation();
-      }
-    } catch (err) {
-      console.log("error getting location", err);
-    }
-  };
-  const getGeoLocaation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        console.log("position update", position);
-        setLatLng({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      (error) => {
-        console.log("error getting location", error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
+
   return (
     <BottomTabNavigator.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarStyle: { height: hp(7) },
       }}
     >
       <BottomTabNavigator.Screen
-        name="Home"
-        component={(props) => <Home {...props} latLng={latLng} />}
+        name="Homes"
+        component={Home}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
               <>
                 <Image
                   source={require("../../Assets/clapperboard.png")}
-                  style={{ height: hp(4) }}
+                  style={{ height: hp(3) }}
                   resizeMode="contain"
                 />
                 <Text
@@ -84,14 +51,14 @@ export default function BottomTabs() {
       />
       <BottomTabNavigator.Screen
         name="FindMyMasjid"
-        component={(props) => <FindMyMasjid {...props} latLng={latLng} />}
+        component={FindMyMasjid}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
               <>
                 <Image
                   source={require("../../Assets/masjid.png")}
-                  style={{ height: hp(4) }}
+                  style={{ height: hp(3) }}
                   resizeMode="contain"
                 />
                 <Text
@@ -113,7 +80,7 @@ export default function BottomTabs() {
               <>
                 <Image
                   source={require("../../Assets/radio.png")}
-                  style={{ height: hp(4) }}
+                  style={{ height: hp(3) }}
                   resizeMode="contain"
                 />
                 <Text
@@ -135,7 +102,7 @@ export default function BottomTabs() {
               <>
                 <Image
                   source={require("../../Assets/prayer.png")}
-                  style={{ height: hp(4) }}
+                  style={{ height: hp(3) }}
                   resizeMode="contain"
                 />
                 <Text
