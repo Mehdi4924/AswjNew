@@ -23,6 +23,7 @@ import { CustomFonts } from "../../Theme/Fonts";
 import { Icon } from "@rneui/base";
 import { LocationGetting } from "../../utilis/LocationGetting";
 import Toast from "react-native-simple-toast";
+import LoadingDots from "../Components/LoadingDots";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyAizf1uimNFXUerqmfomTFsJqGmac4_GPM";
 const FindMyMasjid = (props) => {
@@ -169,7 +170,7 @@ const FindMyMasjid = (props) => {
             ) : null}
           </MapView>
         ) : (
-          <Text style={styles.locationFetchingText}>Fetching Location</Text>
+          <LoadingDots style={styles.locationFetchingText} />
         )}
         <View style={styles.bottomButtonsContainer}>
           <Btn
@@ -274,11 +275,10 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   locationFetchingText: {
-    alignSelf: "center",
-    backgroundColor: colors.primary,
     padding: 10,
-    borderRadius: 5,
     color: colors.white,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.4),
   },
   bottomButtonsContainer: {
     position: "absolute",

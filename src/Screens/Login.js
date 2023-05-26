@@ -4,22 +4,19 @@ import {
   Text,
   TouchableOpacity,
   View,
-  BackHandler,
   StatusBar,
   Platform,
-  TextInput,
+  StyleSheet,
 } from "react-native";
 import { FormInput } from "../../utilis/Text_input";
 import { Btn } from "../../utilis/Btn";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
 import BackGround from "../Components/Background";
 import ModalValidations from "../Components/ModalValidations";
 import auth, { firebase } from "@react-native-firebase/auth";
 import { loginValidation } from "../../utilis/validation";
 import style from "../../Theme/styles";
-import { useFocusEffect } from "@react-navigation/core";
 import {
   LoginManager,
   Settings,
@@ -27,19 +24,16 @@ import {
   GraphRequest,
   GraphRequestManager,
 } from "react-native-fbsdk-next";
-// Settings.initializeSDK();
-import {
-  AppleButton,
-  appleAuth,
-} from "@invertase/react-native-apple-authentication";
+import { appleAuth } from "@invertase/react-native-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Color from "../../Theme/Colors";
 import { ScrollView } from "react-native-gesture-handler";
+import { hp, wp } from "../../utilis/Responsive";
+import colors from "../../Theme/Colors";
+import { CustomFonts } from "../../Theme/Fonts";
 
 const Login = ({ navigation }) => {
   const [Email, onChangeEmail] = useState("");
   const [Password, onChangePassword] = useState("");
-  const [errors, setError] = useState(null);
   const [secure, setSecure] = useState(true);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
@@ -66,7 +60,6 @@ const Login = ({ navigation }) => {
     );
     return auth().signInWithCredential(appleCredential);
   };
-
   const LoginFacebook = async () => {
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       async (result) => {
@@ -132,7 +125,6 @@ const Login = ({ navigation }) => {
       __doSingIn(Email, Password);
     }
   };
-
   const __doSingIn = async (email, password) => {
     try {
       let response = await auth().signInWithEmailAndPassword(email, password);
@@ -167,16 +159,13 @@ const Login = ({ navigation }) => {
       }
     }
   };
-
   const guestLogin = async () => {
     await AsyncStorage.setItem("Guest", "1");
-    // navigation.navigate("Home")
     navigation.reset({
       index: 0,
       routes: [{ name: "Home" }],
     });
   };
-
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
@@ -186,45 +175,23 @@ const Login = ({ navigation }) => {
         ) : null}
         <ScrollView>
           <View>
-            <Text style={[style.lightheader, { marginTop: "15%" }]}>
+            <Text style={[style.thickHeader, { marginTop: hp(8) }]}>
               ASWJ COMPANION
             </Text>
-
-            <View style={{ flexDirection: "row", alignSelf: "center" }}>
+            <View style={styles.signInView}>
               <Text style={style.thickHeader}>SIGN IN </Text>
-              <Text
-                style={[
-                  style.lightheader,
-                  {
-                    alignSelf: "center",
-                    marginVertical: 50,
-                  },
-                ]}
-              >
-                NOW
-              </Text>
+              <Text style={style.lightheader}>NOW</Text>
             </View>
             <FormInput
               iconName_s={"email"}
               placeholder={"E-mail"}
               value={Email}
-              placeholderTextColor={"rgba(255,255,255, 0.6)"}
+              placeholderTextColor={"rgba(255,255,255, 0.5)"}
               keyboardType="email-address"
-              style={{
-                flex: 1,
-                color: "#ffff",
-                fontFamily: "Montserrat-Medium",
-                fontSize: 12,
-              }}
-              text_input_container={{
-                flexDirection: "row",
-                backgroundColor: "rgba(255,255,255, 0.1)",
-                marginHorizontal: 30,
-                marginVertical: 10,
-                paddingVertical: Platform.OS == "ios" ? 15 : 5,
-              }}
+              style={styles.formInputContainer}
+              text_input_container={styles.textInputStyles}
               onChangeText={(Email) => {
-                setError(""), onChangeEmail(Email.trim());
+                onChangeEmail(Email.trim());
               }}
             />
             <FormInput
@@ -234,22 +201,12 @@ const Login = ({ navigation }) => {
               placeholderTextColor={"rgba(255,255,255, 0.6)"}
               secureTextEntry={secure}
               iconName={secure ? "eye-off" : "eye"}
-              icon_color={"#fff"}
-              style={{
-                flex: 1,
-                color: "#ffff",
-                fontFamily: "Montserrat-Medium",
-                fontSize: 12,
-              }}
               onPress_icon={() => setSecure(!secure)}
-              text_input_container={{
-                flexDirection: "row",
-                paddingVertical: 5,
-                backgroundColor: "rgba(255,255,255, 0.1)",
-                marginHorizontal: 30,
-              }}
+              icon_color={colors.white}
+              style={styles.formInputContainer}
+              text_input_container={styles.textInputStyles}
               onChangeText={(Password) => {
-                setError(""), onChangePassword(Password);
+                onChangePassword(Password);
               }}
             />
 
@@ -258,133 +215,49 @@ const Login = ({ navigation }) => {
               onPress={() => {
                 onSubmit();
               }}
-              containerStyle={{
-                backgroundColor: "#00A300",
-                padding: 18,
-                marginHorizontal: 30,
-                marginVertical: 20,
-              }}
-              textStyle={[
-                style.thickHeader,
-                {
-                  color: "white",
-                  textAlign: "center",
-                  fontFamily: "Montserrat-ExtraBold",
-                  fontSize: 13,
-                  letterSpacing: 1,
-                },
-              ]}
+              containerStyle={styles.btnStyles}
+              textStyle={style.btnMain}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginHorizontal: 40,
-              }}
-            >
+            <View style={styles.forgotContainer}>
               <TouchableOpacity
                 onPress={() => navigation.navigate("ForgetPassword")}
               >
-                <Text style={[style.thickHeader, { letterSpacing: 2 }]}>
-                  Forgot
-                </Text>
+                <Text style={style.thickHeader}>Forgot</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                <Text style={[style.thickHeader, { letterSpacing: 2 }]}>
-                  Register
-                </Text>
+                <Text style={style.thickHeader}>Register</Text>
               </TouchableOpacity>
             </View>
 
-            <Text
-              style={{
-                fontSize: 12,
-                marginVertical: 20,
-                fontFamily: "Montserrat-Regular",
-                color: "#fff",
-                alignSelf: "center",
-                // fontSize: 15,
-              }}
-            >
+            <Text style={[style.lightheader, { marginVertical: hp(5) }]}>
               OR CONTINUE WITH
             </Text>
             <TouchableOpacity
               onPress={() => LoginFacebook()}
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                backgroundColor: "#2a4685",
-                paddingVertical: Platform.OS == "ios" ? 10 : 8,
-                marginHorizontal: 30,
-                marginVertical: 10,
-                borderRadius: 5,
-              }}
-              textstyle={{ color: "#fff", fontWeight: "bold" }}
+              style={styles.facebookBtn}
             >
               <FontAwesome
-                color={"#fff"}
-                size={20}
+                color={colors.white}
+                size={hp(2.5)}
                 name={"facebook"}
-                style={{ alignSelf: "center", marginHorizontal: 15 }}
+                style={{ marginHorizontal: wp(3) }}
               />
 
-              <Text
-                style={[
-                  style.thickHeader,
-                  {
-                    fontFamily: "Montserrat-Medium",
-                    fontSize: 13,
-                    letterSpacing: 1,
-                  },
-                ]}
-              >
-                LOGIN WITH FACEBOOK
-              </Text>
+              <Text style={style.btnMain}>LOGIN WITH FACEBOOK</Text>
             </TouchableOpacity>
             {Platform.OS == "ios" ? (
-              // <AppleButton
-              //   buttonStyle={AppleButton.Style.WHITE}
-              //   buttonType={AppleButton.Type.SIGN_IN}
-              //   style={{
-              //     width: '84%', // You must specify a width
-              //     height: '6%', // You must specify a height
-              //     marginHorizontal: 30,
-              //     // marginVertical: 15
-
-              //   }}
-              //   onPress={() => onAppleButtonPress()}
-              // />
               <TouchableOpacity
                 onPress={() => onAppleButtonPress()}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  backgroundColor: "#fff",
-                  paddingVertical: Platform.OS == "ios" ? 10 : 8,
-                  marginHorizontal: 30,
-                  // marginVertical: 10,
-                  borderRadius: 5,
-                }}
-                textstyle={{ color: "#fff", fontWeight: "bold" }}
+                style={[styles.facebookBtn, { backgroundColor: colors.white }]}
               >
                 <AntDesign
-                  color={"#000"}
-                  size={20}
+                  color={colors.black}
+                  size={hp(2.5)}
                   name={"apple1"}
                   style={{ alignSelf: "flex-start", marginHorizontal: 10 }}
                 />
 
-                <Text
-                  style={[
-                    style.thickHeader,
-                    {
-                      fontFamily: "Montserrat-Bold",
-                      fontSize: 13,
-                      letterSpacing: 0,
-                      color: "#000",
-                    },
-                  ]}
-                >
+                <Text style={[style.btnMain, { color: colors.black }]}>
                   Sign In With Apple
                 </Text>
               </TouchableOpacity>
@@ -392,22 +265,8 @@ const Login = ({ navigation }) => {
             <Btn
               text="LOGIN AS A GUEST"
               onPress={() => guestLogin()}
-              containerStyle={{
-                backgroundColor: "#00A300",
-                padding: 12,
-                marginHorizontal: 30,
-                marginVertical: Platform.OS == "ios" ? 12 : 0,
-              }}
-              textStyle={[
-                style.thickHeader,
-                {
-                  color: "white",
-                  textAlign: "center",
-                  fontFamily: "Montserrat-Medium",
-                  fontSize: 13,
-                  letterSpacing: 1,
-                },
-              ]}
+              containerStyle={styles.btnStyles}
+              textStyle={style.btnMain}
             />
           </View>
         </ScrollView>
@@ -415,5 +274,46 @@ const Login = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  signInView: {
+    flexDirection: "row",
+    alignSelf: "center",
+    alignItems: "center",
+    marginBottom: hp(8),
+  },
+  formInputContainer: {
+    flex: 1,
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.6),
+  },
+  textInputStyles: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255,255,255, 0.1)",
+    marginHorizontal: wp(8),
+    marginVertical: hp(1),
+    borderRadius: 5,
+  },
+  btnStyles: {
+    backgroundColor: colors.primary,
+    padding: hp(2),
+    marginHorizontal: wp(8),
+    marginVertical: hp(2),
+    borderRadius: 5,
+  },
+  forgotContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: wp(8),
+  },
+  facebookBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    backgroundColor: colors.facebookButton,
+    padding: hp(2),
+    marginHorizontal: wp(8),
+    marginVertical: hp(1),
+    borderRadius: 5,
+  },
+});
 export default Login;

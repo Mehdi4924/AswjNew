@@ -6,11 +6,9 @@ import {
   View,
   StyleSheet,
   FlatList,
-  Dimensions,
   Modal,
 } from "react-native";
 import { Btn } from "../../utilis/Btn";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import BackGround from "../Components/Background";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import database from "@react-native-firebase/database";
@@ -18,24 +16,21 @@ import BackButton from "../Components/BackButton";
 import auth, { firebase } from "@react-native-firebase/auth";
 import style from "../../Theme/styles";
 import ModalValidations from "../Components/ModalValidations";
-const Notification = ({ navigation }) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
-  const [text, settext] = useState("Select Mosques");
-  const [Select, setSelect] = useState("Select ");
-  const [Centers, setCenters] = useState("Centers ");
-  const [arr, setarr] = useState([]);
-  const [arrList, setarrList] = useState([]);
-  const [Key, setKey] = useState();
-  const [color, setColor] = useState(false);
+import { hp, wp } from "../../utilis/Responsive";
+import colors from "../../Theme/Colors";
+import { CustomFonts } from "../../Theme/Fonts";
 
+const Notification = ({ navigation }) => {
+  const [text, settext] = useState(["Select Mosques"]);
+  const [arr, setarr] = useState([]);
+  const [color, setColor] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [Mosq, setMosq] = useState([]);
   const [showModal, setshowModal] = useState(false);
   const [message, setMessage] = useState(null);
   const [MosqKey, setMosqKey] = useState([]);
   const [showModal2, setshowModal2] = useState(false);
   const [uid, setUid] = useState();
+
   // useEffect(() => {
   //   firebase.auth().onAuthStateChanged((user) => {
   //     if (user) {
@@ -139,6 +134,7 @@ const Notification = ({ navigation }) => {
               }
               if (data !== null) {
                 let fields = [];
+                let TextAppend = "";
                 if (data.mosques == undefined || data.mosques == null) {
                 } else {
                   for (let index = 0; index < arr.length; index++) {
@@ -150,6 +146,7 @@ const Notification = ({ navigation }) => {
                       if (arr[index].hashNumber === data.mosques[index2]) {
                         arr[index].check = true;
                         fields.push(arr[index].name);
+                        TextAppend = `${TextAppend} \n ${arr[index].name}`;
                       }
                     }
                   }
@@ -179,7 +176,6 @@ const Notification = ({ navigation }) => {
   //     settext(Mosq);
   //   }
   // };
-
   const setMasjidd = (check, name, key) => {
     let found;
     for (const index in MosqKey) {
@@ -218,7 +214,7 @@ const Notification = ({ navigation }) => {
     setColor(true);
     setMessage("Notification Centers Updated!!");
   };
-  
+
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
@@ -227,84 +223,21 @@ const Notification = ({ navigation }) => {
           onPressBack={() => navigation.navigate("Home")}
         />
         <ModalValidations visible={showModal} message={message} color={color} />
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginTop: "50%",
-            marginVertical: 50,
-          }}
-        >
-          <Text
-            style={{
-              color: "rgba(255,255,255,0.7)",
-              alignSelf: "center",
-              marginTop: 30,
-              fontFamily: "Montserrat-Medium",
-              letterSpacing: 1,
-              fontSize: 18,
-            }}
-          >
-            {Select}
+        <View style={styles.topTextView}>
+          <Text style={styles.selectText}>Select </Text>
+          <Text style={[styles.selectText, { fontFamily: CustomFonts.bold }]}>
+            Centers{" "}
           </Text>
-          <Text
-            style={{
-              color: "#fff",
-              alignSelf: "center",
-              marginTop: 30,
-              fontFamily: "Montserrat-Bold",
-              letterSpacing: 1,
-              fontWeight: "bold",
-              fontSize: 18,
-            }}
-          >
-            {Centers}
-          </Text>
-          <Text
-            style={{
-              fontFamily: "sans-serif-thin",
-              color: "rgba(255,255,255,0.7)",
-              alignSelf: "center",
-              marginTop: 30,
-              fontFamily: "Montserrat-Medium",
-              letterSpacing: 1,
-              fontSize: 18,
-            }}
-          >
-            to get Notification
-          </Text>
+          <Text style={styles.selectText}>to get Notification</Text>
         </View>
         <TouchableOpacity
           onPress={() => setshowModal2(true)}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 30,
-            marginVertical: 10,
-            paddingVertical: 15,
-            borderWidth: 3,
-            borderColor: "transparent",
-          }}
+          style={styles.textContainer}
         >
-          <Text
-            style={{
-              color: "#fff",
-              marginHorizontal: 15,
-              fontFamily: "Montserrat-Light",
-            }}
-          >
-            {text}
-          </Text>
-          <MaterialIcons
-            color={"rgba(255,255,255,0.2)"}
-            size={25}
-            name={"arrow-drop-down"}
-            style={{ marginHorizontal: 35, textAlign: "left" }}
-          />
+          {text.map((item) => {
+            return <Text style={styles.textStyles}>{item}</Text>;
+          })}
         </TouchableOpacity>
-
         <Modal
           animationType="fade"
           transparent={true}
@@ -312,26 +245,9 @@ const Notification = ({ navigation }) => {
           style={{}}
           onRequestClose={() => {}}
         >
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <View
-              style={{
-                marginHorizontal: 25,
-                backgroundColor: "white",
-                maxHeight: "45%",
-                borderRadius: 20,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "rgba(128,128,128,0.1)",
-                  paddingVertical: 20,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                  borderWidth: 1,
-                  borderBottomColor: "rgba(0, 0, 0,0.2)",
-                  borderColor: "transparent",
-                }}
-              />
+          <View style={styles.modalContainer}>
+            <View style={styles.modalSubContainer}>
+              <View style={styles.modalTopView} />
               <FlatList
                 data={arr}
                 extraData={refresh}
@@ -342,7 +258,7 @@ const Notification = ({ navigation }) => {
                       setMasjidd(item.check, item.name, item.hashNumber);
                       setRefresh(!refresh);
                     }}
-                    style={{ flexDirection: "row", marginVertical: 15 }}
+                    style={styles.listContainer}
                   >
                     <MaterialCommunityIcons
                       name={
@@ -351,78 +267,41 @@ const Notification = ({ navigation }) => {
                           : "checkbox-blank-outline"
                       }
                       size={20}
-                      color={item.check ? "#00A300" : "	rgba(0,0,0,0.4)"}
+                      color={item.check ? colors.primary : colors.black}
                       style={{
-                        marginHorizontal: 20,
-                        fontFamily: "Montserrat-Light",
+                        marginHorizontal: wp(5),
                       }}
                     />
-                    <Text
-                      style={{
-                        alignSelf: "center",
-                        color: "#000",
-                        fontFamily: "Montserrat-Regular",
-                        fontSize: 15,
-                      }}
-                    >
-                      {item.name}
-                    </Text>
+                    <Text style={styles.listText}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
               />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={styles.modalButtonContainer}>
                 <Btn
                   text="CANCEL"
                   onPress={() => {
                     setshowModal2(false);
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    // marginVertical: 20,
-                    width: "49.7%",
-                    borderBottomLeftRadius: 20,
-                  }}
-                  textStyle={[
-                    style.thickHeader,
+                  containerStyle={[
+                    styles.modalBtnStyles,
                     {
-                      color: "white",
-                      textAlign: "center",
-                      fontFamily: "Montserrat-Bold",
-                      fontSize: 13,
-                      letterSpacing: 1,
+                      borderBottomLeftRadius: 5,
                     },
                   ]}
+                  textStyle={style.btnMain}
                 />
                 <Btn
                   text="OK"
                   onPress={() => {
                     setshowModal2(false);
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    width: "49.7%",
-                    // marginVertical: 20,
-                    borderBottomRightRadius: 20,
-                  }}
-                  textStyle={[
-                    style.thickHeader,
+                  containerStyle={[
+                    styles.modalBtnStyles,
                     {
-                      color: "white",
-                      textAlign: "center",
-                      fontFamily: "Montserrat-Medium",
-                      fontSize: 13,
-                      letterSpacing: 1,
+                      borderBottomRightRadius: 5,
                     },
                   ]}
+                  textStyle={style.btnMain}
                 />
               </View>
             </View>
@@ -433,29 +312,8 @@ const Notification = ({ navigation }) => {
           onPress={() => {
             onSubmit();
           }}
-          containerStyle={{
-            marginBottom: 0,
-            backgroundColor: "#00A300",
-            padding: 18,
-            borderRadius: 10,
-            marginVertical: 20,
-            position: "absolute",
-            height: 60,
-            left: 0,
-            // top: windowHeight - 80,
-            bottom: 0,
-            width: windowWidth,
-          }}
-          textStyle={[
-            style.thickHeader,
-            {
-              color: "white",
-              textAlign: "center",
-              fontFamily: "Montserrat-Bold",
-              fontSize: 13,
-              letterSpacing: 1,
-            },
-          ]}
+          containerStyle={styles.bottomButton}
+          textStyle={style.thickHeader}
         />
       </BackGround>
     </SafeAreaView>
@@ -465,18 +323,76 @@ const Notification = ({ navigation }) => {
 export default Notification;
 
 const styles = StyleSheet.create({
-  wrapper: {
+  topTextView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: hp(5),
+  },
+  selectText: {
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+    letterSpacing: 1,
+    fontSize: hp(2),
+  },
+  textContainer: {
+    backgroundColor: "rgba(255,255,255, 0.2)",
+    padding: wp(5),
+    marginHorizontal: wp(3),
+    borderRadius: 5,
+  },
+  textStyles: {
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+  },
+  modalContainer: {
     flex: 1,
-    height: "50%",
-    marginBottom: 50,
+    justifyContent: "center",
+    paddingHorizontal: wp(5),
   },
-  text: {
-    color: "#00A300",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+  modalSubContainer: {
+    backgroundColor: "white",
+    maxHeight: hp(50),
+    borderRadius: 5,
   },
-  dotstyle: {
-    color: "red",
+  modalTopView: {
+    backgroundColor: "rgba(128,128,128,0.1)",
+    paddingVertical: 20,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    borderWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0,0.2)",
+    borderColor: "transparent",
+  },
+  listContainer: {
+    flexDirection: "row",
+    marginVertical: hp(1),
+    alignItems: "center",
+  },
+  listText: {
+    color: colors.black,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.8),
+  },
+  modalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  modalBtnStyles: {
+    backgroundColor: colors.primary,
+    width: "49.8%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: hp(6),
+  },
+  bottomButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+    height: hp(7),
+    left: 0,
+    bottom: 0,
+    width: wp(100),
   },
 });

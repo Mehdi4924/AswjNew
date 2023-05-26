@@ -169,6 +169,23 @@ export default function Settings(props) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.buttonContainer}
+        onPress={async () => props.navigation.navigate("Notification")}
+      >
+        <Image
+          source={require("../../Assets/bell.png")}
+          style={{ width: wp(10), height: hp(4) }}
+          resizeMode="contain"
+        />
+        <Text style={styles.containerText}>Notifcations</Text>
+        <Icon
+          type="material-community"
+          name="chevron-right"
+          size={hp(3)}
+          color={colors.white}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.buttonContainer}
         onPress={async () => LogOut()}
       >
         <Image

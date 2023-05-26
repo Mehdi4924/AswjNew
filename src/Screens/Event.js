@@ -144,7 +144,7 @@ const Events = ({ navigation }) => {
             data={arr}
             onRefresh={() => test()}
             refreshing={fetching}
-            contentContainerStyle={{ paddingHorizontal: wp(3) }}
+            contentContainerStyle={styles.listContentContainer}
             extraData={refresh}
             renderItem={({ item, key }) => {
               return (
@@ -223,6 +223,11 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  listContentContainer: {
+    paddingHorizontal: wp(3),
+    paddingTop: hp(2),
+    paddingBottom: hp(8),
   },
   listContainer: {
     backgroundColor: "rgba(255,255,255, 0.1)",

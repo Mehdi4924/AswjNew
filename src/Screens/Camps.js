@@ -18,9 +18,6 @@ import { Icon } from "@rneui/base";
 
 const Camps = ({ navigation, route }) => {
   const [arr, setarr] = useState([]);
-  const [male, setmale] = useState(false);
-  const [female, setfemale] = useState(false);
-  const [showModal2, setshowModal2] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [list, setlist] = useState([
@@ -62,7 +59,6 @@ const Camps = ({ navigation, route }) => {
     if (!text || text === "") {
       setlist(list);
     } else if (!Array.isArray(filteredName) && !filteredName.length) {
-      // setlist(filteredName)
     } else if (Array.isArray(filteredName)) {
       setlist(filteredName);
     }
@@ -72,11 +68,6 @@ const Camps = ({ navigation, route }) => {
     if (arr.length == 0) {
       test();
     }
-    let exampleDate = "20-01-01";
-    // let thiDate = new Date('2000-01-01').toString()
-    let thiDate = new Date(exampleDate).getFullYear();
-
-    // alert(JSON.stringify(thiDate))
   }, []);
   const test = () => {
     setFetching(true);
@@ -193,24 +184,25 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     justifyContent: "flex-start",
-    backgroundColor: "rgba(255,255,255, 0.1)",
+    backgroundColor: "rgba(255,255,255, 0.7)",
     marginVertical: hp(1),
     paddingVertical: hp(2),
     marginHorizontal: wp(5),
+    borderRadius: 5,
   },
   listTitle: {
-    color: colors.white,
+    color: colors.primary,
     fontSize: hp(1.8),
     fontFamily: CustomFonts.bold,
   },
   listDate: {
-    color: "rgba(255,255,255,0.4)",
+    color: colors.black,
     fontSize: hp(1.8),
     fontFamily: CustomFonts.regular,
     marginVertical: hp(1),
   },
   listCenter: {
-    color: colors.white,
+    color: colors.black,
     fontSize: hp(1.5),
     fontFamily: CustomFonts.regular,
   },

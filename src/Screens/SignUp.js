@@ -17,7 +17,6 @@ import style from "../../Theme/styles";
 const SignUp = ({ navigation }) => {
   const [Email, onChangeEmail] = useState("");
   const [Password, onChangePassword] = useState("");
-  const [errors, setError] = useState(null);
   const [secure, setSecure] = useState(true);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
@@ -40,7 +39,6 @@ const SignUp = ({ navigation }) => {
     }
   };
   const __doCreateUser = async (email, password) => {
-    // alert("here");
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)

@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, Text, View, Dimensions, Modal } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  View,
+  Dimensions,
+  Modal,
+  StyleSheet,
+} from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import BackGround from "../Components/Background";
 import BackButton from "../Components/BackButton";
-import style from '../../Theme/styles'
+import style from "../../Theme/styles";
+import colors from "../../Theme/Colors";
+import { hp, wp } from "../../utilis/Responsive";
+import { CustomFonts } from "../../Theme/Fonts";
 const SessionDetail = ({ navigation, route }) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  let data  = route.params.data;
-  let date  = route.params.date;
+  let data = route.params.data;
+  let date = route.params.date;
   // console.log(day);
   return (
     <SafeAreaView style={style.safeareaview}>
@@ -19,121 +29,74 @@ const SessionDetail = ({ navigation, route }) => {
             navigation.goBack(null);
           }}
         />
-        <Text
-          style={{
-            color: "#00A300",
-            fontSize: 22,
-            marginHorizontal: 10,
-            textAlign: "center",
-            fontFamily: 'Montserrat-Medium',
-
-          }}
-        >
-          {data.title}
+        <Text style={styles.title}>{data.title}</Text>
+        <Text style={styles.dateTimeText}>
+          {data.start_time + " "}-{" " + data.end_time}
         </Text>
-
-        <View>
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 15,
-              marginHorizontal: 20,
-              textAlign: "center",
-              marginVertical: 5,
-              fontFamily: 'Montserrat-Medium',
-
-            }}
-          >
-          {data.start_time+" "}-{" "+data.end_time}
-
-            {/* {data.start_time}-{data.end_time} */}
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'Montserrat-Medium',
-              color: "#fff",
-              fontSize: 15,
-              marginHorizontal: 20,
-              textAlign: "center",
-              marginVertical: 10,
-            }}
-          >
-            {date}
-          </Text>
+        <Text style={styles.dateText}>{date}</Text>
+        <View style={styles.descContainer}>
+          <Text style={styles.descHeading}>Description</Text>
+          <Text style={styles.descText}>{data.description}</Text>
         </View>
-        <View
-          style={{
-            justifyContent: "flex-start",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginVertical: 25,
-            paddingVertical: 15,
-            marginHorizontal: 15,
-          }}
-        >
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 15,
-              marginHorizontal: 20,
-              marginVertical: 10,
-              fontFamily: 'Montserrat-Medium',
-
-            }}
-          >
-            Description
-          </Text>
-          <Text style={{ color: "#fff", fontSize: 15, marginHorizontal: 20 ,fontFamily: 'Montserrat-Medium',
-}}>
-            {data.description}
-          </Text>
+        <View style={styles.speakersContainer}>
+          <Entypo color={colors.white} size={hp(2)} name={"users"} />
+          <Text style={styles.descHeading}>Speakers</Text>
         </View>
-        <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
-          <Entypo
-            color={"#fff"}
-            size={15}
-            name={"users"}
-            style={{
-              alignSelf: "center",
-              textAlign: "center",
-            }}
-          />
-          <Text
-            style={{
-              color: "#fff",
-              fontSize: 15,
-              marginHorizontal: 5,
-              marginVertical: 10,
-              fontFamily: 'Montserrat-Medium',
-
-            }}
-          >
-            Speakers
-          </Text>
-        </View>
-        <View
-          style={{
-            justifyContent: "flex-start",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginVertical: 10,
-            paddingVertical: 15,
-            marginHorizontal: 15,
-          }}
-        >
-          <Text
-            style={{
-              color: "rgba(255,255,255, 0.6)",
-              fontSize: 15,
-              marginHorizontal: 20,
-              fontFamily: 'Montserrat-Medium',
-
-            }}
-          >
-            {data.speakers}
-          </Text>
+        <View style={styles.descContainer}>
+          <Text style={styles.descText}>{data.speakers}</Text>
         </View>
       </BackGround>
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  title: {
+    color: colors.primary,
+    fontSize: hp(2.2),
+    margin: hp(6),
+    textAlign: "center",
+    fontFamily: CustomFonts.bold,
+  },
+  dateTimeText: {
+    color: colors.white,
+    fontSize: hp(1.8),
+    textAlign: "center",
+    marginVertical: hp(1),
+    fontFamily: CustomFonts.regular,
+  },
+  dateText: {
+    fontFamily: CustomFonts.bold,
+    color: colors.white,
+    fontSize: hp(2),
+    textAlign: "center",
+    marginVertical: hp(1),
+  },
+  descContainer: {
+    justifyContent: "flex-start",
+    backgroundColor: "rgba(255,255,255, 0.4)",
+    marginVertical: hp(2),
+    paddingVertical: hp(1),
+    marginHorizontal: wp(5),
+    paddingHorizontal: wp(5),
+    borderRadius: 5,
+  },
+  descHeading: {
+    color: colors.white,
+    fontSize: hp(2),
+    marginVertical: hp(1),
+    fontFamily: CustomFonts.bold,
+  },
+  descText: {
+    color: colors.white,
+    fontSize: hp(1.8),
+    fontFamily: CustomFonts.regular,
+  },
+  speakersContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: wp(25),
+    marginHorizontal: wp(5),
+    alignItems: "center",
+  },
+});
 export default SessionDetail;

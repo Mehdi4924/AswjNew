@@ -31,7 +31,6 @@ const Sessions = ({ navigation, route }) => {
       .ref("/Schedule List")
       .on("value", (snapshot) => {
         let data = snapshot.child(key).val();
-        console.log(data, "data");
         for (let key in data) {
           data[key].hashNumber = key;
           arr.push(data[key]);

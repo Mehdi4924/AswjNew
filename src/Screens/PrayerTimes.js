@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   Modal,
+  StyleSheet,
 } from "react-native";
 import { Btn } from "../../utilis/Btn";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -16,6 +17,9 @@ import moment from "moment";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import style from "../../Theme/styles";
 import "hijri-date";
+import { hp, wp } from "../../utilis/Responsive";
+import colors from "../../Theme/Colors";
+import { CustomFonts } from "../../Theme/Fonts";
 
 const PrayerTimes = ({ navigation }) => {
   const [date, setDate] = useState("");
@@ -28,7 +32,6 @@ const PrayerTimes = ({ navigation }) => {
   const [timingsList2, settimingsList2] = useState([]);
   const [day, setday] = useState();
   const [month, setmonth] = useState();
-  const [uid, setUid] = useState();
   const today = new HijriDate();
   var monthNames = [
     { name: "Muharram" },
@@ -44,69 +47,31 @@ const PrayerTimes = ({ navigation }) => {
     { name: "Dhul Qa'ada" },
     { name: "Dhul Hijja" },
   ];
-  console.log(monthNames[0].name);
-  console.log(today._date, "today");
-  // const day_eid_adha = new HijriDate(1443, 6, 10);
   let hijirdate = today._date;
   let hijirYear = today._year;
   let hijirmonth = today._month;
   let hijirmonth2;
   for (let index = 0; index < monthNames.length; index++) {
-    // const element = array[index];
     if (index == hijirmonth - 1) {
-      // alert("hii")
       hijirmonth2 = monthNames[index].name;
     }
   }
-  // console.log(day_eid_adha);
-  const list = [
-    {
-      text: "Fajar",
-      Athan: "3:54AM",
-      Iqamah: "4:54AM",
-    },
-    {
-      text: "Duhur",
-      Athan: "3:54AM",
-      Iqamah: "4:54AM",
-    },
-    {
-      text: "Asr",
-      Athan: "3:54AM",
-      Iqamah: "4:54AM",
-    },
-    {
-      text: "Maghrib",
-      Athan: "3:54AM",
-      Iqamah: "4:54AM",
-    },
-    {
-      text: "Isha",
-      Athan: "3:54AM",
-      Iqamah: "4:54AM",
-    },
-  ];
   useEffect(() => {
     let date = moment().utcOffset("+05:30").format("MMMM DD,YYYY");
     setDate(date);
     let a = new Date().getDate();
     setday(a);
     setmonth(moment().utcOffset("+05:30").format("MMM"));
-    console.log(month);
-  });
-
-  useEffect(() => {
     if (showModal === true) {
       setTimeout(() => {
         setshowModal(false);
       }, 3000);
     }
-  }, [showModal]);
-  useEffect(() => {
     if (arr.length == 0) {
       MosqList();
     }
-  }, []);
+  }, [showModal]);
+
   const MosqList = () => {
     database()
       .ref("/mosqueList")
@@ -140,10 +105,10 @@ const PrayerTimes = ({ navigation }) => {
           }
         }
         timingsList2.length = 1;
-        console.log("timingsList2", timingsList2);
         setRefresh(!refresh);
       });
   };
+  console.log("namaz timming", timingsList2);
 
   return (
     <SafeAreaView style={style.safeareaview}>
@@ -154,330 +119,62 @@ const PrayerTimes = ({ navigation }) => {
         />
         <TouchableOpacity
           onPress={() => setshowModal2(true)}
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 15,
-            marginVertical: 25,
-            paddingVertical: 15,
-          }}
+          style={styles.selectButton}
         >
-          <Text style={{ color: "#fff", marginLeft: 20, fontSize: 15 }}>
-            {text}
-          </Text>
+          <Text style={styles.selectText}>{text}</Text>
           <MaterialIcons
-            color={"rgba(255,255,255,0.2)"}
+            color={"rgba(255,255,255,0.3)"}
             size={25}
             name={"arrow-drop-down"}
             style={{ textAlign: "center" }}
           />
         </TouchableOpacity>
-
         <Text style={style.lightheader}>
           {hijirdate + " "}
           {hijirmonth2 + " "}
           {hijirYear}
         </Text>
         <Text style={style.lightheader}>{date}</Text>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 15,
-            marginTop: 20,
-            paddingVertical: 15,
-          }}
-        >
-          <Text
-            style={[
-              style.thickHeader,
-              {
-                marginHorizontal: 10,
-              },
-            ]}
-          >
-            Prayers
-          </Text>
-          <Text
-            style={[
-              style.thickHeader,
-              {
-                marginHorizontal: 10,
-              },
-            ]}
-          >
-            Athan
-          </Text>
-          <Text
-            style={[
-              style.thickHeader,
-              {
-                marginHorizontal: 10,
-              },
-            ]}
-          >
-            Iqamah
-          </Text>
+        <View style={styles.listHeader}>
+          <Text style={style.thickHeader}>Prayers</Text>
+          <Text style={style.thickHeader}>Athan</Text>
+          <Text style={style.thickHeader}>Iqamah</Text>
         </View>
         <FlatList
           data={timingsList2}
           extraData={refresh}
-          renderItem={({ item, key }) => (
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  backgroundColor: "rgba(255,255,255, 0.1)",
-                  marginVertical: 5,
-                  paddingVertical: 15,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  Fajar
-                </Text>
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Fajar} AM
-                </Text>
-
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Fajar_Iqamah} AM
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  backgroundColor: "rgba(255,255,255, 0.1)",
-                  marginVertical: 2,
-                  paddingVertical: 15,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  Dhuhr
-                </Text>
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Dhuhr} PM
-                </Text>
-
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Dhuhr_Iqamah} PM
-                </Text>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  backgroundColor: "rgba(255,255,255, 0.1)",
-                  marginVertical: 5,
-                  paddingVertical: 15,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  Asar
-                </Text>
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Asar} PM
-                </Text>
-
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Asar_Iqamah} PM
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  backgroundColor: "rgba(255,255,255, 0.1)",
-                  marginVertical: 2,
-                  paddingVertical: 15,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  Maghrib
-                </Text>
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Maghrib} PM
-                </Text>
-
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Maghrib_Iqamah} PM
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  backgroundColor: "rgba(255,255,255, 0.1)",
-                  marginVertical: 5,
-                  paddingVertical: 15,
-                  marginHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  Isha
-                </Text>
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Isha} PM
-                </Text>
-
-                <Text
-                  style={[
-                    style.forgetText,
-                    {
-                      // color: "#fff",
-                      marginLeft: 20,
-                      fontSize: 18,
-                      width: "25%",
-                    },
-                  ]}
-                >
-                  {item.Isha_Iqamah} PM
-                </Text>
-              </View>
-            </View>
-          )}
+          renderItem={({ item, key }) => {
+            console.log("==>>", item);
+            return (
+              <>
+                <View style={styles.listContainer}>
+                  <Text style={styles.listText}>Fajar</Text>
+                  <Text style={styles.listText}>{item.Fajar} AM</Text>
+                  <Text style={styles.listText}>{item.Fajar_Iqamah} AM</Text>
+                </View>
+                <View style={styles.listContainer}>
+                  <Text style={styles.listText}>Dhuhr</Text>
+                  <Text style={styles.listText}>{item.Dhuhr} PM</Text>
+                  <Text style={styles.listText}>{item.Dhuhr_Iqamah} PM</Text>
+                </View>
+                <View style={styles.listContainer}>
+                  <Text style={styles.listText}>Asar</Text>
+                  <Text style={styles.listText}>{item.Asar} PM</Text>
+                  <Text style={styles.listText}>{item.Asar_Iqamah} PM</Text>
+                </View>
+                <View style={styles.listContainer}>
+                  <Text style={styles.listText}>Maghrib</Text>
+                  <Text style={styles.listText}>{item.Maghrib} PM</Text>
+                  <Text style={styles.listText}>{item.Maghrib_Iqamah} PM</Text>
+                </View>
+                <View style={styles.listContainer}>
+                  <Text style={styles.listText}>Isha</Text>
+                  <Text style={styles.listText}>{item.Isha} PM</Text>
+                  <Text style={styles.listText}>{item.Isha_Iqamah} PM</Text>
+                </View>
+              </>
+            );
+          }}
         />
         <Modal
           animationType="fade"
@@ -486,28 +183,9 @@ const PrayerTimes = ({ navigation }) => {
           style={{}}
           onRequestClose={() => {}}
         >
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <View
-              style={{
-                marginHorizontal: 25,
-                backgroundColor: "white",
-                // backgroundColor: "red",
-
-                maxHeight: "45%",
-                borderRadius: 20,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "rgba(128,128,128,0.1)",
-                  paddingVertical: 20,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                  borderWidth: 1,
-                  borderBottomColor: "rgba(0, 0, 0,0.2)",
-                  borderColor: "transparent",
-                }}
-              />
+          <View style={styles.modalContainer}>
+            <View style={styles.modalSubContainer}>
+              <View style={styles.modalTopView} />
               <FlatList
                 data={arr}
                 extraData={refresh}
@@ -527,74 +205,36 @@ const PrayerTimes = ({ navigation }) => {
                           check.length = 0;
                           item.check = true;
                           settext(item.name);
-
                           check.push(item);
                         }
                       }
-
                       setRefresh(!refresh);
                     }}
-                    style={{ flexDirection: "row", marginVertical: 15 }}
+                    style={styles.modalListContainer}
                   >
-                    {/* <MaterialCommunityIcons
-                      name={
-                        item.check
-                          ? "checkbox-marked"
-                          : "checkbox-blank-outline"
-                      }
-                      size={20}
-                      color={item.check ? "#00A300" : "#000"}
-                      style={{ marginHorizontal: 20 }}
-                    /> */}
-
                     <FontAwesome
-                      color={item.check ? "#00A300" : "rgba(0,0,0,0.3)"}
+                      color={item.check ? colors.primary : colors.black}
                       size={20}
                       name={item.check ? "dot-circle-o" : "circle-o"}
                       style={{ textAlign: "right", marginHorizontal: 20 }}
                     />
-                    <Text
-                      style={[
-                        style.lightheader,
-                        { alignSelf: "center", color: "#000" },
-                      ]}
-                    >
-                      {item.name}
-                    </Text>
+                    <Text style={styles.listText}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
               />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  // backgroundColor:'black',
-                }}
-              >
+              <View style={styles.modalButtonContainer}>
                 <Btn
                   text="CANCEL"
                   onPress={() => {
                     setshowModal2(false);
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    // marginVertical: 20,
-                    width: "49.7%",
-                    // paddingHorizontal: '15%',
-                    borderBottomLeftRadius: 20,
-                  }}
-                  textStyle={[
-                    style.thickHeader,
+                  containerStyle={[
+                    styles.modalBtnStyles,
                     {
-                      color: "white",
-                      textAlign: "center",
-                      fontFamily: "Montserrat-Medium",
-                      fontSize: 13,
-                      letterSpacing: 1,
+                      borderBottomLeftRadius: 5,
                     },
                   ]}
+                  textStyle={style.btnMain}
                 />
                 <Btn
                   text="OK"
@@ -602,26 +242,13 @@ const PrayerTimes = ({ navigation }) => {
                     setshowModal2(false);
                     MasjidTimings();
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    width: "49.7%",
-
-                    // paddingHorizontal: '15%',
-                    // marginVertical: 20,
-                    borderBottomRightRadius: 20,
-                  }}
-                  textStyle={[
-                    style.thickHeader,
+                  containerStyle={[
+                    styles.modalBtnStyles,
                     {
-                      color: "white",
-                      textAlign: "center",
-                      fontFamily: "Montserrat-Medium",
-                      fontSize: 13,
-                      letterSpacing: 1,
+                      borderBottomRightRadius: 5,
                     },
                   ]}
+                  textStyle={style.btnMain}
                 />
               </View>
             </View>
@@ -631,5 +258,98 @@ const PrayerTimes = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  selectButton: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    backgroundColor: "rgba(255,255,255, 0.3)",
+    marginHorizontal: wp(5),
+    marginVertical: hp(2),
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(5),
+    borderRadius: 5,
+  },
+  selectText: {
+    color: colors.white,
+    fontSize: hp(2),
+    fontFamily: CustomFonts.regular,
+  },
+  listHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255,255,255, 0.3)",
+    borderRadius: 5,
+    marginHorizontal: wp(5),
+    marginTop: hp(3),
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(3),
+  },
+  listContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255,255,255, 0.5)",
+    marginVertical: hp(0.5),
+    paddingVertical: hp(1),
+    marginHorizontal: wp(5),
+    paddingHorizontal: wp(3),
+    borderRadius: 5,
+  },
+  listText: {
+    fontFamily: CustomFonts.light,
+    color: colors.white,
+    fontSize: hp(2),
+  },
+  // modal styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: wp(5),
+  },
+  modalSubContainer: {
+    backgroundColor: "white",
+    maxHeight: hp(50),
+    borderRadius: 5,
+  },
+  modalTopView: {
+    backgroundColor: "rgba(128,128,128,0.1)",
+    paddingVertical: 20,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    borderWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0,0.2)",
+    borderColor: "transparent",
+  },
+  modalListContainer: {
+    flexDirection: "row",
+    marginVertical: hp(1),
+    alignItems: "center",
+  },
+  listText: {
+    color: colors.black,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.8),
+  },
+  modalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  modalBtnStyles: {
+    backgroundColor: colors.primary,
+    width: "49.8%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: hp(6),
+  },
+  bottomButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+    height: hp(7),
+    left: 0,
+    bottom: 0,
+    width: wp(100),
+  },
+});
 export default PrayerTimes;

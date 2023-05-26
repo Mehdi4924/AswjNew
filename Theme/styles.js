@@ -1,35 +1,38 @@
 import { StyleSheet } from "react-native";
-import Color from './Colors'
+import colors from "./Colors";
+import Color from "./Colors";
+import { CustomFonts } from "./Fonts";
 const style = StyleSheet.create({
   lightheader: {
-    fontFamily: 'Montserrat-Light',
-    color: "#fff",
+    fontFamily: CustomFonts.light,
+    color: colors.white,
     alignSelf: "center",
     fontSize: 15,
   },
   thickHeader: {
-    fontFamily: 'Montserrat-Bold',
-    color: "#fff",
+    fontFamily: CustomFonts.bold,
+    color: colors.white,
     alignSelf: "center",
     fontSize: 14,
   },
   forgetText: {
-    fontFamily: 'Montserrat-Regular',
-    color: "#fff",
+    fontFamily: CustomFonts.regular,
+    color: colors.white,
     alignSelf: "center",
     fontSize: 18,
   },
   btnMain: {
-    color: "#fff",
+    color: colors.white,
     alignSelf: "center",
-    textAlign: 'center',
-    fontFamily: 'Montserrat-Bold',
+    textAlign: "center",
+    fontFamily: CustomFonts.bold,
     fontSize: 13,
-    letterSpacing: 1
+    letterSpacing: 1,
   },
-  safeareaview:{
-    flex: 1 ,backgroundColor:Color.statusbarColor
-  }
+  safeareaview: {
+    flex: 1,
+    backgroundColor: Color.statusbarColor,
+  },
 });
 
-export default style
+export default style;
