@@ -37,6 +37,7 @@ const Login = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
+
   Settings.setAppID("2978331529163342");
   useEffect(() => {
     if (showModal === true) {
@@ -166,6 +167,7 @@ const Login = ({ navigation }) => {
       routes: [{ name: "Home" }],
     });
   };
+
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
@@ -209,7 +211,6 @@ const Login = ({ navigation }) => {
                 onChangePassword(Password);
               }}
             />
-
             <Btn
               text="SIGN IN"
               onPress={() => {
@@ -228,7 +229,6 @@ const Login = ({ navigation }) => {
                 <Text style={style.thickHeader}>Register</Text>
               </TouchableOpacity>
             </View>
-
             <Text style={[style.lightheader, { marginVertical: hp(5) }]}>
               OR CONTINUE WITH
             </Text>
@@ -242,7 +242,6 @@ const Login = ({ navigation }) => {
                 name={"facebook"}
                 style={{ marginHorizontal: wp(3) }}
               />
-
               <Text style={style.btnMain}>LOGIN WITH FACEBOOK</Text>
             </TouchableOpacity>
             {Platform.OS == "ios" ? (
@@ -256,7 +255,6 @@ const Login = ({ navigation }) => {
                   name={"apple1"}
                   style={{ alignSelf: "flex-start", marginHorizontal: 10 }}
                 />
-
                 <Text style={[style.btnMain, { color: colors.black }]}>
                   Sign In With Apple
                 </Text>

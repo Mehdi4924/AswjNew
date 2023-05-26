@@ -6,6 +6,7 @@ import {
   View,
   Dimensions,
   Platform,
+  StyleSheet,
 } from "react-native";
 import { FormInput } from "../../utilis/Text_input";
 import { Btn } from "../../utilis/Btn";
@@ -14,6 +15,10 @@ import { Signup_validation } from "../../utilis/validation";
 import ModalValidations from "../Components/ModalValidations";
 import auth, { firebase } from "@react-native-firebase/auth";
 import style from "../../Theme/styles";
+import { hp, wp } from "../../utilis/Responsive";
+import { CustomFonts } from "../../Theme/Fonts";
+import colors from "../../Theme/Colors";
+
 const SignUp = ({ navigation }) => {
   const [Email, onChangeEmail] = useState("");
   const [Password, onChangePassword] = useState("");
@@ -58,39 +63,12 @@ const SignUp = ({ navigation }) => {
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
         <ModalValidations visible={showModal} message={message} />
-
-        <Text
-          style={[
-            style.thickHeader,
-            {
-              marginTop: 30,
-            },
-          ]}
-        >
+        <Text style={[style.thickHeader, { marginTop: hp(8) }]}>
           ASWJ COMPANION
         </Text>
-
-        <View style={{ flexDirection: "row", alignSelf: "center" }}>
-          <Text
-            style={[
-              style.thickHeader,
-              {
-                marginVertical: 50,
-              },
-            ]}
-          >
-            REGISTER{" "}
-          </Text>
-          <Text
-            style={[
-              style.lightheader,
-              {
-                marginVertical: 50,
-              },
-            ]}
-          >
-            NOW
-          </Text>
+        <View style={styles.signInView}>
+          <Text style={style.thickHeader}>SIGN IN </Text>
+          <Text style={style.lightheader}>NOW</Text>
         </View>
         <FormInput
           iconName_s={"email"}
@@ -98,20 +76,8 @@ const SignUp = ({ navigation }) => {
           value={Email}
           placeholderTextColor={"rgba(255,255,255, 0.6)"}
           keyboardType="email-address"
-          style={{
-            flex: 1,
-            color: "#ffff",
-            fontFamily: "Montserrat-Medium",
-            fontSize: 12,
-          }}
-          text_input_container={{
-            flexDirection: "row",
-            // backgroundColor: "red",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 30,
-            marginVertical: 10,
-            paddingVertical: Platform.OS == "ios" ? 15 : 5,
-          }}
+          style={styles.formInputContainer}
+          text_input_container={styles.textInputStyles}
           onChangeText={(Email) => {
             onChangeEmail(Email.trim());
           }}
@@ -123,21 +89,10 @@ const SignUp = ({ navigation }) => {
           placeholderTextColor={"rgba(255,255,255, 0.6)"}
           secureTextEntry={secure}
           iconName={secure ? "eye-off" : "eye"}
-          icon_color={"#fff"}
-          style={{
-            flex: 1,
-            color: "#ffff",
-            fontFamily: "Montserrat-Medium",
-            fontSize: 12,
-          }}
           onPress_icon={() => setSecure(!secure)}
-          text_input_container={{
-            flexDirection: "row",
-            paddingVertical: 5,
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            // backgroundColor: "red",
-            marginHorizontal: 30,
-          }}
+          icon_color={colors.white}
+          style={styles.formInputContainer}
+          text_input_container={styles.textInputStyles}
           onChangeText={(Password) => {
             onChangePassword(Password);
           }}
@@ -148,29 +103,42 @@ const SignUp = ({ navigation }) => {
           onPress={() => {
             onSubmit();
           }}
-          containerStyle={{
-            backgroundColor: "#00A300",
-            padding: 18,
-            marginHorizontal: 30,
-            marginVertical: 20,
-          }}
-          textStyle={[
-            style.thickHeader,
-            {
-              color: "white",
-              textAlign: "center",
-              fontFamily: "Montserrat-Bold",
-              fontSize: 14,
-              letterSpacing: 1,
-            },
-          ]}
+          containerStyle={styles.btnStyles}
+          textStyle={style.btnMain}
         />
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={[style.thickHeader, { letterSpacing: 2 }]}>SIGN IN</Text>
+          <Text style={style.thickHeader}>SIGN IN</Text>
         </TouchableOpacity>
       </BackGround>
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  signInView: {
+    flexDirection: "row",
+    alignSelf: "center",
+    alignItems: "center",
+    marginBottom: hp(8),
+  },
+  formInputContainer: {
+    flex: 1,
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.6),
+  },
+  textInputStyles: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255,255,255, 0.1)",
+    marginHorizontal: wp(8),
+    marginVertical: hp(1),
+    borderRadius: 5,
+  },
+  btnStyles: {
+    backgroundColor: colors.primary,
+    padding: hp(2),
+    marginHorizontal: wp(8),
+    marginVertical: hp(2),
+    borderRadius: 5,
+  },
+});
 export default SignUp;

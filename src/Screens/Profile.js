@@ -238,7 +238,6 @@ const Profile = ({ navigation, route }) => {
           animationType="fade"
           transparent={true}
           visible={showModal2}
-          style={{}}
           onRequestClose={() => {}}
         >
           <View style={styles.modalContainer}>

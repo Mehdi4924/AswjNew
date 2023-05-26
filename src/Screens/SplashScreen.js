@@ -7,17 +7,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const SplashScreen = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [arr, setarr] = useState([]);
-  const [guest, setguest] = useState();
-
   useEffect(() => {
     setTimeout(async () => {
       let v = await AsyncStorage.getItem("Guest");
-      console.log("v==>>", v);
       firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
           let data = "";
-
           database()
             .ref("/profile")
             .on("value", (snapshot) => {

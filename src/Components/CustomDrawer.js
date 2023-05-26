@@ -158,7 +158,6 @@ const CustomDrawer = ({ props, navigation }) => {
     }
   };
   return (
-    // <SafeAreaView style={style.safeareaview}>
     <ImageBackground
       style={{ flex: 1 }}
       resizeMode={"cover"}
@@ -254,7 +253,6 @@ const CustomDrawer = ({ props, navigation }) => {
       />
       <ModalGuest visible={visibility} />
     </ImageBackground>
-    // </SafeAreaView>
   );
 };
 export default CustomDrawer;

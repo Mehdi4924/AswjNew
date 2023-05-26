@@ -23,7 +23,6 @@ class Filter extends React.Component {
         transparent={true}
         visible={this.props.visible}
         onRequestClose={() => {
-          //   Alert.alert("Modal has been closed.");
           this.props.visible = false;
         }}
       >

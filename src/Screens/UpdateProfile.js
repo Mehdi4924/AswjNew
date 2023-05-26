@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   Modal,
+  StyleSheet,
 } from "react-native";
 import { FormInput } from "../../utilis/Text_input";
 import { Btn } from "../../utilis/Btn";
@@ -19,14 +20,17 @@ import database from "@react-native-firebase/database";
 import auth, { firebase } from "@react-native-firebase/auth";
 import style from "../../Theme/styles";
 import { ScrollView } from "react-native-gesture-handler";
+import { hp, wp } from "../../utilis/Responsive";
+import colors from "../../Theme/Colors";
+import { CustomFonts } from "../../Theme/Fonts";
+
 const UpdateProfile = ({ navigation, route }) => {
   const [Name, onChangeName] = useState("");
-  const [text, settext] = useState("Nearby AWSJ Centers");
+  const [text, settext] = useState(["Nearby AWSJ Centers"]);
   const [inputBorder, setinputBorder] = useState(false);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [color, setcolor] = useState(false);
-
   const [male, setmale] = useState(false);
   const [female, setfemale] = useState(false);
   const [showModal2, setshowModal2] = useState(false);
@@ -38,13 +42,6 @@ const UpdateProfile = ({ navigation, route }) => {
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    if (showModal === true) {
-      setTimeout(() => {
-        setshowModal(false);
-      }, 3000);
-    }
-  }, [showModal]);
-  useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setUid(user.uid);
@@ -53,8 +50,12 @@ const UpdateProfile = ({ navigation, route }) => {
     if (arr.length == 0) {
       test();
     }
-  }, []);
-
+    if (showModal === true) {
+      setTimeout(() => {
+        setshowModal(false);
+      }, 3000);
+    }
+  }, [showModal]);
   const test = () => {
     database()
       .ref("/mosqueList")
@@ -80,7 +81,6 @@ const UpdateProfile = ({ navigation, route }) => {
       settext(Mosq);
     }
   };
-
   const onSubmit = () => {
     let gen, gensss;
     if (male == true) {
@@ -112,172 +112,82 @@ const UpdateProfile = ({ navigation, route }) => {
 
       setshowModal(true);
       setMessage("You have successfully Registered !");
-      setcolor(true)
+      setcolor(true);
       navigation.navigate("Login");
     }
   };
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
-  
         <ModalValidations visible={showModal} message={message} color={color} />
-<ScrollView>
-<View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "center",
-            marginTop: 200,
-            marginVertical: 50,
-          }}
-        >
-          <Text
-            style={[
-              style.thickHeader,
-              {
-                fontSize: 25,
-              },
-            ]}
-          >
-            USER{" "}
-          </Text>
-          <Text
-            style={[
-              style.lightheader,
-              {
-                fontSize: 25,
-              },
-            ]}
-          >
-            PROFILE
-          </Text>
-        </View>
-
-        <FormInput
-          iconName_p={"user-alt"}
-          placeholder={"Full Name"}
-          value={Name}
-          placeholderTextColor={"rgba(255,255,255, 0.6)"}
-          style={{ color: "#fff", flex: 1,    fontFamily: 'Montserrat-Regular',
-        }}
-          text_input_container={{
-            flexDirection: "row",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 30,
-            marginVertical: 10,
-            paddingVertical: Platform.OS=='ios'?15:5,
-            borderWidth: 3,
-            borderBottomColor:
-              inputBorder && Name ? "#00A300" : "rgba(255, 0, 0,0.4)",
-            borderColor: "transparent",
-          }}
-          onChangeText={(Name) => {
-            onChangeName(Name), setinputBorder(true);
-          }}
-        />
-        <TouchableOpacity
-          onPress={() => setshowModal2(true)}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "rgba(255,255,255, 0.1)",
-            marginHorizontal: 30,
-            marginVertical: 10,
-            paddingVertical: 15,
-            borderWidth: 3,
-            borderBottomColor:
-              text == "Nearby AWSJ Centers"
-                ? "rgba(255, 0, 0,0.4)"
-                : "transparent",
-            borderColor: "transparent",
-          }}
-        >
-          <Text
-            style={{ color: "rgba(255,255,255, 0.6)", marginHorizontal: 15 ,    fontFamily: 'Montserrat-Light',
-          }}
-          >
-            {text}
-          </Text>
-          <MaterialIcons
-            color={"rgba(255,255,255,0.2)"}
-            size={25}
-            name={"arrow-drop-down"}
-            style={{ marginHorizontal: 35 }}
-          />
-        </TouchableOpacity>
-        <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
-          <TouchableOpacity
-            onPress={() => {
-              setmale(!male), setfemale(false);
-            }}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "rgba(255,255,255, 0.1)",
-              marginHorizontal: 2,
-              marginVertical: 10,
-              paddingVertical: 15,
-              paddingHorizontal: 5,
-            }}
-          >
-            <Text
-              style={{ color: "rgba(255,255,255, 0.9)", marginHorizontal: 15,    fontFamily: 'Montserrat-Regular',
-            }}
+        <ScrollView>
+          <View>
+            <View style={styles.topTextView}>
+              <Text style={style.thickHeader}>USER </Text>
+              <Text style={style.lightheader}>PROFILE</Text>
+            </View>
+            <FormInput
+              iconName_p={"user-alt"}
+              placeholder={"Full Name"}
+              value={Name}
+              placeholderTextColor={"rgba(255,255,255, 0.6)"}
+              style={styles.formInputContainer}
+              text_input_container={styles.textInputStyles}
+              onChangeText={(Name) => {
+                onChangeName(Name), setinputBorder(true);
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => setshowModal2(true)}
+              style={styles.textContainer}
             >
-              MALE
-            </Text>
-            <FontAwesome
-              color={male ? "#00A300" : "rgba(255,255,255,0.2)"}
-              size={25}
-              name={male ? "dot-circle-o" : "circle-o"}
-              style={{ marginHorizontal: 20 }}
+              {text.map((item) => {
+                return <Text style={styles.textStyles}>{item}</Text>;
+              })}
+              <MaterialIcons
+                color={"rgba(255,255,255,0.5)"}
+                size={25}
+                name={"arrow-drop-down"}
+              />
+            </TouchableOpacity>
+            <View style={styles.genderButtonsView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setmale(!male), setfemale(false);
+                }}
+                style={styles.genderButton}
+              >
+                <Text style={style.thickHeader}>MALE</Text>
+                <FontAwesome
+                  color={male ? colors.primary : "rgba(255,255,255,0.2)"}
+                  size={hp(3)}
+                  name={male ? "dot-circle-o" : "circle-o"}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setfemale(!female), setmale(false);
+                }}
+                style={styles.genderButton}
+              >
+                <Text style={style.thickHeader}>FEMALE</Text>
+                <FontAwesome
+                  color={male ? colors.primary : "rgba(255,255,255,0.2)"}
+                  size={hp(3)}
+                  name={female ? "dot-circle-o" : "circle-o"}
+                />
+              </TouchableOpacity>
+            </View>
+            <Btn
+              text="UPDATE PROFILE"
+              onPress={() => {
+                onSubmit();
+              }}
+              containerStyle={styles.btnStyles}
+              textStyle={style.btnMain}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setfemale(!female), setmale(false);
-            }}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              backgroundColor: "rgba(255,255,255, 0.1)",
-              marginHorizontal: 30,
-              marginVertical: 10,
-              paddingVertical: 15,
-            }}
-          >
-            <Text
-              style={{ color: "rgba(255,255,255, 0.9)", marginHorizontal: 15,    fontFamily: 'Montserrat-Regular',
-            }}
-            >
-              FEMALE
-            </Text>
-            <FontAwesome
-              color={female ? "#00A300" : "rgba(255,255,255,0.2)"}
-              size={25}
-              name={female ? "dot-circle-o" : "circle-o"}
-              style={{ marginHorizontal: 20 }}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={{ position: "absolute", bottom: 0, right: 0, left: 0 }}>
-          <Btn
-            text="UPDATE PROFILE"
-            onPress={() => {
-              onSubmit();
-            }}
-            containerStyle={{
-              backgroundColor: "#00A300",
-              padding: 18,
-              marginVertical: 0,
-            }}
-            textStyle={[style.thickHeader, { color: 'white', textAlign: 'center', fontFamily: 'Montserrat-ExtraBold', fontSize: 13, letterSpacing: 1 }]}
-            />
-        </View>
-
-</View>
-</ScrollView>
-
+          </View>
+        </ScrollView>
         <Modal
           animationType="fade"
           transparent={true}
@@ -285,26 +195,9 @@ const UpdateProfile = ({ navigation, route }) => {
           style={{}}
           onRequestClose={() => {}}
         >
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            <View
-              style={{
-                marginHorizontal: 25,
-                backgroundColor: "white",
-                maxHeight: "45%",
-                borderRadius: 20,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: "rgba(128,128,128,0.1)",
-                  paddingVertical: 20,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                  borderWidth: 1,
-                  borderBottomColor: "rgba(0, 0, 0,0.2)",
-                  borderColor: "transparent",
-                }}
-              />
+          <View style={styles.modalContainer}>
+            <View style={styles.modalSubContainer}>
+              <View style={styles.modalTopView} />
               <FlatList
                 data={arr}
                 extraData={refresh}
@@ -315,7 +208,7 @@ const UpdateProfile = ({ navigation, route }) => {
                       setMasjidd(item.check, item.name, item.hashNumber);
                       setRefresh(!refresh);
                     }}
-                    style={{ flexDirection: "row", marginVertical: 15 }}
+                    style={styles.listContainer}
                   >
                     <MaterialCommunityIcons
                       name={
@@ -324,53 +217,41 @@ const UpdateProfile = ({ navigation, route }) => {
                           : "checkbox-blank-outline"
                       }
                       size={20}
-                      color={item.check ? "#00A300" : "rgba(0,0,0,0.4)"}
-                      style={{ marginHorizontal: 20 }}
+                      color={item.check ? colors.primary : colors.black}
+                      style={{
+                        marginHorizontal: wp(5),
+                      }}
                     />
-                    <Text style={{ alignSelf: "center", color: "#000",fontFamily: 'Montserrat-Regular',
-                      fontSize:15  }}>
-                      {item.name}
-                    </Text>
+                    <Text style={styles.listText}>{item.name}</Text>
                   </TouchableOpacity>
                 )}
               />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={styles.modalButtonContainer}>
                 <Btn
                   text="CANCEL"
                   onPress={() => {
                     setshowModal2(false);
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    marginVertical: 20,
-                    width: '49.7%',
-                    borderBottomLeftRadius: 20,
-                  }}
-                  textStyle={[style.thickHeader, { color: 'white', textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 13, letterSpacing: 1 }]}
-
+                  containerStyle={[
+                    styles.modalBtnStyles,
+                    {
+                      borderBottomLeftRadius: 5,
+                    },
+                  ]}
+                  textStyle={style.btnMain}
                 />
                 <Btn
                   text="OK"
                   onPress={() => {
                     setshowModal2(false);
                   }}
-                  containerStyle={{
-                    marginBottom: 0,
-                    backgroundColor: "#00A300",
-                    paddingVertical: 18,
-                    width: '49.7%',
-                    marginVertical: 20,
-                    borderBottomRightRadius: 20,
-                  }}
-                  textStyle={[style.thickHeader, { color: 'white', textAlign: 'center', fontFamily: 'Montserrat-Medium', fontSize: 13, letterSpacing: 1 }]}
-
+                  containerStyle={[
+                    styles.modalBtnStyles,
+                    {
+                      borderBottomRightRadius: 5,
+                    },
+                  ]}
+                  textStyle={style.btnMain}
                 />
               </View>
             </View>
@@ -380,5 +261,115 @@ const UpdateProfile = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
+const styles = StyleSheet.create({
+  topTextView: {
+    flexDirection: "row",
+    alignSelf: "center",
+    marginVertical: hp(15),
+  },
+  formInputContainer: {
+    flex: 1,
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.6),
+  },
+  textInputStyles: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255,255,255, 0.2)",
+    marginHorizontal: wp(8),
+    marginVertical: hp(1),
+    borderBottomWidth: 2,
+    borderBottomColor: "red",
+    padding: wp(2),
+    borderRadius: 5,
+  },
+  textContainer: {
+    backgroundColor: "rgba(255,255,255, 0.2)",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: wp(5),
+    marginHorizontal: wp(8),
+    borderRadius: 5,
+    borderBottomWidth: 2,
+    borderBottomColor: "red",
+  },
+  textStyles: {
+    color: colors.white,
+    fontFamily: CustomFonts.regular,
+  },
+  genderButtonsView: {
+    flexDirection: "row",
+    marginHorizontal: wp(5),
+    justifyContent: "space-around",
+  },
+  genderButton: {
+    width: wp(40),
+    height: hp(7),
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "rgba(255,255,255, 0.1)",
+    alignItems: "center",
+    marginVertical: hp(2),
+    borderRadius: 5,
+  },
+  btnStyles: {
+    backgroundColor: colors.primary,
+    padding: hp(2),
+    marginVertical: hp(1),
+    marginHorizontal: wp(8),
+    borderRadius: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: wp(5),
+  },
+  modalSubContainer: {
+    backgroundColor: "white",
+    maxHeight: hp(50),
+    borderRadius: 5,
+  },
+  modalTopView: {
+    backgroundColor: "rgba(128,128,128,0.1)",
+    paddingVertical: 20,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
+    borderWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0,0.2)",
+    borderColor: "transparent",
+  },
+  listContainer: {
+    flexDirection: "row",
+    marginVertical: hp(1),
+    alignItems: "center",
+  },
+  listText: {
+    color: colors.black,
+    fontFamily: CustomFonts.regular,
+    fontSize: hp(1.8),
+  },
+  modalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  modalBtnStyles: {
+    backgroundColor: colors.primary,
+    width: "49.8%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: hp(6),
+  },
+  bottomButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+    height: hp(7),
+    left: 0,
+    bottom: 0,
+    width: wp(100),
+  },
+});
 export default UpdateProfile;
