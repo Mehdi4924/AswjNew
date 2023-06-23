@@ -1,4 +1,4 @@
-package com.aswj;
+package com.ASWJ_Companion;
 
 import android.app.Application;
 import android.content.Context;
