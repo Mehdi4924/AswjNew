@@ -3,5 +3,6 @@
     "search.exclude": {
         "**/node_modules": false
     },
-    "search.useParentIgnoreFiles": false
+    "search.useParentIgnoreFiles": false,
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

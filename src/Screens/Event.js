@@ -58,6 +58,7 @@ const Events = ({ navigation }) => {
       .ref("/eventList")
       .on("value", (snapshot) => {
         let data = snapshot.val();
+        console.log(data,'====>>');
         let b, days, month, year;
         if (arr.length > 0) {
         } else {
