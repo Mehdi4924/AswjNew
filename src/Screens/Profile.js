@@ -25,7 +25,9 @@ import style from "../../Theme/styles";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
-
+import { subscribeTopic } from "../Services/SubscribeTopic";
+import { UnsubscribeTopic } from "../Services/UnsubscribeTopic";
+let copyOfPrevMosques = [];
 const Profile = ({ navigation, route }) => {
   const windowHeight = Dimensions.get("window").height;
   const [Name, onChangeName] = useState();
@@ -52,6 +54,7 @@ const Profile = ({ navigation, route }) => {
       }, 1500);
     }
   }, [showModal]);
+
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -61,6 +64,7 @@ const Profile = ({ navigation, route }) => {
     });
   }, []);
   const test = async (id) => {
+    console.log("caleed");
     database()
       .ref("/mosqueList")
       .on("value", (snapshot) => {
@@ -79,6 +83,7 @@ const Profile = ({ navigation, route }) => {
               onChangeName(data.fullName);
               if (data.mosques != undefined) {
                 setMosqKey(data.mosques);
+                copyOfPrevMosques = [...data.mosques];
               }
               if (data.gender == "male") {
                 setmale(true);
@@ -96,7 +101,6 @@ const Profile = ({ navigation, route }) => {
                     }
                   }
                 }
-
                 settext(fields);
               }
               setarr(arr);
@@ -133,7 +137,7 @@ const Profile = ({ navigation, route }) => {
       text.push(name);
     }
   };
-  const onSubmit = () => {
+  const onSubmit = async () => {
     let gen = male || female ? true : false;
     let gensss = male ? "male" : female ? "female" : "";
     let validate = Update_Profile_Validations(Name, text, gen);
@@ -141,8 +145,8 @@ const Profile = ({ navigation, route }) => {
       setshowModal(true);
       setMessage(validate.errors);
     } else {
-      setshowModal(true);
-      setMessage(validate.errors);
+      console.log(copyOfPrevMosques, "prev");
+      await UnsubscribeTopic(copyOfPrevMosques, (mess) => console.log(mess));
       firebase
         .database()
         .ref("profile/" + uid)
@@ -151,7 +155,15 @@ const Profile = ({ navigation, route }) => {
           gender: gensss,
           mosques: MosqKey,
         })
-        .then(() => console.log("Data updated."));
+        .then(async () => {
+          console.log("Data updated."),
+            await subscribeTopic([...MosqKey], (mess) =>
+              console.log(mess)
+            );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       setshowModal(true);
       setMessage("Your profile is updated!!");

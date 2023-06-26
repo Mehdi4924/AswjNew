@@ -17,7 +17,6 @@ const SplashScreen = ({ navigation }) => {
             .ref("/profile")
             .on("value", (snapshot) => {
               data = snapshot.child(user.uid).val();
-              console.log(data);
               if (data == null) {
                 navigation.navigate("UpdateProfile");
               } else {

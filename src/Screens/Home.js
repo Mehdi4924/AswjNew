@@ -83,10 +83,10 @@ export default function Home(props) {
     setFetching(true);
     await getVideos(1)
       .then((res) => {
-        console.log(
-          "success getting videos",
-          JSON.stringify(res.data, null, 4)
-        );
+        // console.log(
+        //   "success getting videos",
+        //   JSON.stringify(res.data, null, 4)
+        // );
       })
       .catch((err) => {
         console.log("error getting videos", err);

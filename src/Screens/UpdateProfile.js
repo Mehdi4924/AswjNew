@@ -23,6 +23,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
+import { subscribeTopic } from "../Services/SubscribeTopic";
 
 const UpdateProfile = ({ navigation, route }) => {
   const [Name, onChangeName] = useState("");
@@ -69,12 +70,19 @@ const UpdateProfile = ({ navigation, route }) => {
       });
   };
   const setMasjidd = (check, name, key) => {
+    console.log(check, name, key);
     if (check == true) {
       Mosq.push(name);
       MosqKey.push(key);
-      let text = Mosq.join();
-      setKey(MosqKey.join());
-      settext(text);
+      if (Mosq.length > 1 && MosqKey.length > 1) {
+        let text = Mosq.join();
+        setKey(MosqKey.join());
+        settext(text);
+      } else {
+        setKey(key);
+        settext([name]);
+      }
+      console.log(text);
     } else {
       let index = Mosq.indexOf(name);
       Mosq.splice(index, 1);
@@ -108,8 +116,12 @@ const UpdateProfile = ({ navigation, route }) => {
           gender: gensss,
           mosques: MosqKey,
         })
-        .then(() => console.log("Data updated."));
-
+        .then(async () => {
+          console.log("Data updated."),
+            await subscribeTopic([...MosqKey, "All"], (mess) =>
+              console.log(mess)
+            );
+        });
       setshowModal(true);
       setMessage("You have successfully Registered !");
       setcolor(true);

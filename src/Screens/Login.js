@@ -37,7 +37,6 @@ const Login = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
-
   Settings.setAppID("2978331529163342");
   useEffect(() => {
     if (showModal === true) {
@@ -128,11 +127,9 @@ const Login = ({ navigation }) => {
   };
   const __doSingIn = async (email, password) => {
     try {
-      let response = await auth().signInWithEmailAndPassword(email, password);
-      console.log(response, "response1");
-      if (response) {
-      }
+      await auth().signInWithEmailAndPassword(email, password);
     } catch (e) {
+      console.log("is called", e);
       if (
         e.message ==
         "[auth/wrong-password] The password is invalid or the user does not have a password."

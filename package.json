@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^2.1.5",
+    "@notifee/react-native": "^7.8.0",
     "@react-native-async-storage/async-storage": "^1.15.14",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-firebase/app": "^14.0.0",
@@ -54,7 +55,10 @@
     "react-native-webview": "^13.2.2",
     "react-native-youtube": "^2.0.2",
     "react-native-youtube-iframe": "^2.2.2",
-    "react-navigation": "^4.4.4"
+    "react-navigation": "^4.4.4",
+    "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
