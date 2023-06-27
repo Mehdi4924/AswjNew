@@ -68,6 +68,7 @@ const Duas = ({ navigation }) => {
       setarr(filteredName);
     }
   };
+  console.log(arr);
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>

@@ -1,9 +1,19 @@
+import axios from "axios";
 import { post_request, get_request, put_request } from "./Requests";
-
+const youtubeApiKey = "AIzaSyCiIXh43ZR6zZFoBZ5pih_eNh4NnQj0TUI";
+const youtubeChannelId = "UC9aLYD43e6KQ254Xb75DG-g";
 const getVideos = async (page) => {
   const data = await get_request({
     target: "/users/94972939/videos?per_page=10&&page=" + page,
   });
+  return data;
+};
+const getVideosFromYoutTube = async (page) => {
+  const data = await axios.get(
+    `https://www.googleapis.com/youtube/v3/search?key=${youtubeApiKey}&channelId=${youtubeChannelId}&part=snippet,id&order=date&maxResults=${
+      page * 10
+    }`
+  );
   return data;
 };
 const ForgetPassword = async (body) => {
@@ -120,4 +130,5 @@ export {
   getDeviceInfo,
   newEditProfile,
   getVideos,
+  getVideosFromYoutTube,
 };
