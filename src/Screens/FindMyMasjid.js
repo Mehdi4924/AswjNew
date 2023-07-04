@@ -46,6 +46,7 @@ const FindMyMasjid = (props) => {
   const getLocation = async () => {
     await LocationGetting()
       .then((res) => {
+        console.log(res);
         setLatitude(res.coords.latitude);
         setLongitude(res.coords.longitude);
       })

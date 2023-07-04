@@ -10,19 +10,19 @@ import PrayerTimes from "../Screens/PrayerTimes";
 import Duas from "../Screens/Duas";
 import Camps from "../Screens/Camps";
 import LocalMasjids from "../Screens/LocalMasjids";
-import Videos from "../Screens/Videos";
 import Sessions from "../Screens/Sessions";
 import Events from "../Screens/Event";
 import Duas2 from "../Screens/Duas2";
 import Radio from "../Screens/Radio";
 import Notification from "../Screens/Notifications";
-import VideosList from "../Screens/VideosList";
 import FindMyMasjid from "../Screens/FindMyMasjid";
 import SessionDetail from "../Screens/SessionDetail";
 import eventDetail from "../Screens/EventDetails";
 import Profile from "../Screens/Profile";
 import BottomTabs from "./BottomTabs";
 import Settings from "../Screens/Settings";
+import VimeoAllVideos from "../Screens/VimeoAllVideos";
+import YouTubeAllVideos from "../Screens/YouTubeAllVideos";
 
 const Stack = createNativeStackNavigator();
 const Routes = () => {
@@ -90,11 +90,7 @@ const Routes = () => {
           name="LocalMasjids"
           component={LocalMasjids}
         />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="Videos"
-          component={Videos}
-        />
+
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="Sessions"
@@ -120,11 +116,7 @@ const Routes = () => {
           name="Notification"
           component={Notification}
         />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="VideosList"
-          component={VideosList}
-        />
+
         <Stack.Screen
           options={{ headerShown: false }}
           name="FindMyMasjid"
@@ -145,6 +137,16 @@ const Routes = () => {
           options={{ headerShown: false }}
           name="profile"
           component={Profile}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="VimeoAllVideos"
+          component={VimeoAllVideos}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="YouTubeAllVideos"
+          component={YouTubeAllVideos}
         />
       </Stack.Navigator>
     </NavigationContainer>

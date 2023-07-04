@@ -19,7 +19,9 @@ import ModalValidations from "../Components/ModalValidations";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
-
+import { UnsubscribeTopic } from "../Services/UnsubscribeTopic";
+import { subscribeTopic } from "../Services/SubscribeTopic";
+let copyOfPrevMosques = [];
 const Notification = ({ navigation }) => {
   const [text, settext] = useState(["Select Mosques"]);
   const [arr, setarr] = useState([]);
@@ -30,73 +32,11 @@ const Notification = ({ navigation }) => {
   const [MosqKey, setMosqKey] = useState([]);
   const [showModal2, setshowModal2] = useState(false);
   const [uid, setUid] = useState();
-
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     if (user) {
-  //       setUid(user.uid);
-  //       console.log(user);
-  //       getMasjidList(user.uid)
-  //     }
-  //   });
-
-  // }, []);
-
-  // const getMasjidList = (id) => {
-  //   database()
-  //     .ref("/mosqueList")
-  //     .on("value", (snapshot) => {
-  //       let data = snapshot.val();
-  //       for (let key in data) {
-  //         data[key].hashNumber = key;
-  //         arr.push(data[key]);
-  //       }
-  //     });
-  //   database()
-  //     .ref("profile/" + id)
-  //     .on("value", (snapshot) => {
-  //       let data = snapshot.val();
-  //       // console.log(data);
-  //       if(data.mosques.length>0){
-  //       for (let index = 0; index <data.mosques.length; index++) {
-  //         for (let index2 = 0; index2 < arr.length; index2++) {
-  //           if (arr[index2].hashNumber === data.mosques[index])
-  //             arr[index2].page = 1;
-
-  //         }
-  //       }
-
-  //       // for (let index = 0; index < arr.length; index++) {
-  //       //   if (MosqKey.includes(arr[index].hashNumber)) {
-  //       //   } else {
-  //       //     if(arr[index].page===1){
-
-  //       //       setMosqKey([...MosqKey, arr[index].hashNumber]);
-  //       //       setMosq([...Mosq, arr[index].name]);
-
-  //       //       console.log(MosqKey);
-  //       //       console.log(Mosq);
-
-  //       //     // let text = Mosq.join();
-
-  //       //     // settext(text);
-  //       //     }
-  //       //   }
-  //       // }
-  //     }
-
-  //     });
-
-  //   setRefresh(!refresh)
-  // }
-
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setUid(user.uid);
-        // if (arr.length == 0) {
         test(user.uid);
-        // }
       }
     });
   }, []);
@@ -107,6 +47,7 @@ const Notification = ({ navigation }) => {
       }, 1500);
     }
   }, [showModal]);
+
   const test = async (id) => {
     database()
       .ref("/mosqueList")
@@ -121,7 +62,6 @@ const Notification = ({ navigation }) => {
           .ref("profile/" + id)
           .on("value", (snapshot) => {
             let data = snapshot.val();
-            console.log(data, "PRofileDastaaA");
             if (data == null) {
             } else {
               if (
@@ -131,6 +71,7 @@ const Notification = ({ navigation }) => {
               ) {
               } else {
                 setMosqKey(data.mosques);
+                copyOfPrevMosques = data.mosques;
               }
               if (data !== null) {
                 let fields = [];
@@ -158,24 +99,8 @@ const Notification = ({ navigation }) => {
             }
           });
       });
-
     setRefresh(!refresh);
   };
-
-  // const setMasjidd = (page, name, key) => {
-  //   if (page == 1) {
-  //     Mosq.push(name);
-  //     MosqKey.push(key);
-  //     let text = Mosq.join();
-  //     settext(text);
-  //   } else {
-  //     let index = Mosq.indexOf(name);
-  //     let index2 = MosqKey.indexOf(key);
-  //     MosqKey.splice(index2, 1);
-  //     Mosq.splice(index, 1);
-  //     settext(Mosq);
-  //   }
-  // };
   const setMasjidd = (check, name, key) => {
     let found;
     for (const index in MosqKey) {
@@ -202,17 +127,21 @@ const Notification = ({ navigation }) => {
       text.push(name);
     }
   };
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    await UnsubscribeTopic(copyOfPrevMosques, (mess) => console.log(mess));
     firebase
       .database()
       .ref("profile/" + uid)
       .update({
         mosques: MosqKey,
       })
-      .then(() => console.log("Data updated."));
-    setshowModal(true);
-    setColor(true);
-    setMessage("Notification Centers Updated!!");
+      .then(
+        async () =>
+          await subscribeTopic([...MosqKey], (mess) => console.log(mess)),
+        setshowModal(true),
+        setColor(true),
+        setMessage("Notification Centers Updated!!")
+      );
   };
 
   return (

@@ -240,7 +240,14 @@ export default function Home(props) {
               />
             )}
             <View style={styles.listBottomContainer}>
-              <View style={styles.shareContainer}>
+              <TouchableOpacity
+                style={styles.shareContainer}
+                onPress={() =>
+                  item.type == "Vimeo"
+                    ? props.navigation.navigate("VimeoAllVideos")
+                    : props.navigation.navigate("YouTubeAllVideos")
+                }
+              >
                 <Icon
                   name={item.type == "Vimeo" ? "vimeo" : "youtube"}
                   type="material-community"
@@ -249,11 +256,15 @@ export default function Home(props) {
                   color={colors.white}
                 />
                 <Text style={styles.shareText}>
-                  {item.type == "Vimeo" ? "Vimeo" : "YouTube"}
+                  {item.type == "Vimeo"
+                    ? "View Vimeo Videos"
+                    : "View YouTube Videos"}
                 </Text>
-              </View>
-              <View style={styles.shareContainer}>
-                <Text style={styles.shareText}>Share This Video</Text>
+              </TouchableOpacity>
+              <View
+                style={[styles.shareContainer, { justifyContent: "flex-end" }]}
+              >
+                <Text style={styles.shareText}>Share</Text>
                 <TouchableOpacity onPress={() => null}>
                   <Icon
                     name="share-variant"

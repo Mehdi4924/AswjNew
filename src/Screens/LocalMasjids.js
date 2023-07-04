@@ -14,6 +14,7 @@ import style from "../../Theme/styles";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
+import Loader from "../Components/Loader";
 
 const LocalMasjids = ({ navigation }) => {
   const [arr, setarr] = useState([]);
@@ -88,9 +89,10 @@ const LocalMasjids = ({ navigation }) => {
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
+        <Loader loading={fetching} />
         <BackButton
           title={"Masjid Lessons"}
-          onPressBack={() => navigation.navigate("Home")}
+          onPressBack={() => navigation.goBack()}
           filter={true}
           TestingFunc={pull_data}
         />

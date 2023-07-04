@@ -115,7 +115,7 @@ const PrayerTimes = ({ navigation }) => {
       <BackGround>
         <BackButton
           title={"Prayer Times"}
-          onPressBack={() => navigation.navigate("Home")}
+          onPressBack={() => navigation.goBack()}
         />
         <TouchableOpacity
           onPress={() => setshowModal2(true)}

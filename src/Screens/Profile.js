@@ -145,7 +145,6 @@ const Profile = ({ navigation, route }) => {
       setshowModal(true);
       setMessage(validate.errors);
     } else {
-      console.log(copyOfPrevMosques, "prev");
       await UnsubscribeTopic(copyOfPrevMosques, (mess) => console.log(mess));
       firebase
         .database()

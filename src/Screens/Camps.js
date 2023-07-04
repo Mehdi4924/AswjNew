@@ -15,54 +15,13 @@ import colors from "../../Theme/Colors";
 import { hp, wp } from "../../utilis/Responsive";
 import { CustomFonts } from "../../Theme/Fonts";
 import { Icon } from "@rneui/base";
+import ListEmptyComponent from "../Components/ListEmptyComponent";
+import Loader from "../Components/Loader";
 
 const Camps = ({ navigation, route }) => {
   const [arr, setarr] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [list, setlist] = useState([
-    {
-      title: "ASWJ Anual Conference",
-      date: "27 january, 2022",
-      text: "ASWJ Australia",
-    },
-    {
-      title: "sadsa",
-      date: "27 january, 2022",
-      text: "Youth Center",
-    },
-    {
-      title: "dsadsa",
-      date: "25 january, 2022",
-      text: "Youth Center",
-    },
-    {
-      title: "Masjid As Salaam",
-      date: "27 january, 2022",
-      text: "Masjid As-Salaam",
-    },
-    {
-      title: "ASWJ Auburn",
-      date: "27 january, 2022",
-      text: "ASWJ Album",
-    },
-  ]);
-  const findd = (text2) => {
-    if (text2 == "") {
-      setlist(list);
-    }
-    let text = text2.toLowerCase();
-    let trucks = list;
-    let filteredName = trucks.filter((item) => {
-      return item.text.toLowerCase().includes(text);
-    });
-    if (!text || text === "") {
-      setlist(list);
-    } else if (!Array.isArray(filteredName) && !filteredName.length) {
-    } else if (Array.isArray(filteredName)) {
-      setlist(filteredName);
-    }
-  };
 
   useEffect(() => {
     if (arr.length == 0) {
@@ -74,13 +33,12 @@ const Camps = ({ navigation, route }) => {
     database()
       .ref("/Conference List")
       .on("value", (snapshot) => {
-        console.log("data in the list", snapshot);
+        console.log("data in the list", snapshot.val());
         let data = snapshot.val();
         if (arr.length > 0) {
         } else {
           for (let key in data) {
             data[key].hashNumber = key;
-
             if (data[key].type == "main events") {
               let str = data[key].start_date;
               let first, second, third, form, month;
@@ -89,9 +47,7 @@ const Camps = ({ navigation, route }) => {
               second = str.substring(0, str.indexOf("/"));
               str = str.substring(str.indexOf("/") + 1, str.length);
               third = str;
-
               month = first - 1;
-
               var event = new Date(
                 Date.UTC("20" + third, month, second, 3, 0, 0)
               );
@@ -105,21 +61,13 @@ const Camps = ({ navigation, route }) => {
           });
         }
         setRefresh(!refresh);
-
-        // setarr(
-        //   arr.sort(function (a, b) {
-        //     var dateA = new Date(a.start_date).getFullYear();
-        //     var dateB = new Date(b.start_date).getFullYear();
-        //     return dateA < dateB ? 1 : -1; // ? -1 : 1 for ascending/increasing order
-        //   })
-        // );
         setFetching(false);
-        console.log(arr);
       });
   };
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
+        <Loader loading={fetching} />
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon
@@ -138,6 +86,7 @@ const Camps = ({ navigation, route }) => {
             onRefresh={() => test()}
             refreshing={fetching}
             extraData={refresh}
+            ListEmptyComponent={<ListEmptyComponent />}
             renderItem={({ item, key }) => (
               <View style={styles.listContainer}>
                 <TouchableOpacity

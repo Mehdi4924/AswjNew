@@ -70,7 +70,7 @@ const Events = ({ navigation }) => {
             const b = data[key]?.endDate?.split("/");
             b[2] = year.charAt(0) + year.charAt(1) + b[2];
             const finalDate = b.reverse().join("-");
-            if (finalDate <= thisDate.toISOString().split("T")[0]) {
+            if (finalDate >= thisDate.toISOString().split("T")[0]) {
               arr.push(data[key]);
               setRefresh(!refresh);
             }
