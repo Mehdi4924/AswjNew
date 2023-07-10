@@ -37,6 +37,7 @@ const Login = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   Settings.setAppID("2978331529163342");
   useEffect(() => {
     if (showModal === true) {
@@ -122,12 +123,14 @@ const Login = ({ navigation }) => {
       setshowModal(true);
       setMessage(validate.errors);
     } else {
+      setIsLoading(true);
       __doSingIn(Email, Password);
     }
   };
   const __doSingIn = async (email, password) => {
     try {
       await auth().signInWithEmailAndPassword(email, password);
+      setIsLoading(false);
     } catch (e) {
       console.log("is called", e);
       if (
@@ -213,6 +216,7 @@ const Login = ({ navigation }) => {
               onPress={() => {
                 onSubmit();
               }}
+              isLoading={isLoading}
               containerStyle={styles.btnStyles}
               textStyle={style.btnMain}
             />

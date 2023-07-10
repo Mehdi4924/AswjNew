@@ -25,6 +25,7 @@ const SignUp = ({ navigation }) => {
   const [secure, setSecure] = useState(true);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (showModal === true) {
@@ -40,6 +41,7 @@ const SignUp = ({ navigation }) => {
       setshowModal(true);
       setMessage(validate.errors);
     } else {
+      setIsLoading(true);
       __doCreateUser(Email, Password);
     }
   };
@@ -57,6 +59,9 @@ const SignUp = ({ navigation }) => {
         setMessage(
           "Error: The email address is already in use by another account"
         );
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   return (
@@ -105,6 +110,7 @@ const SignUp = ({ navigation }) => {
           }}
           containerStyle={styles.btnStyles}
           textStyle={style.btnMain}
+          isLoading={isLoading}
         />
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={style.thickHeader}>SIGN IN</Text>

@@ -14,6 +14,7 @@ import notifee, {
   EventType,
 } from "@notifee/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { navigate } from "./src/Routes/RootNavigation";
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   console.log("Message handled in the background!", remoteMessage);
@@ -71,6 +72,19 @@ function HeadlessCheck({ isHeadless }) {
   }
   return <App />;
 }
-
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+  const { notification, pressAction } = detail;
+  if (type === EventType.ACTION_PRESS) {
+    console.log("notification press in bavkground", notification);
+    if (notification.data.notType == "Event") {
+      navigate("Events");
+    } else if (notification.data.notType == "Dua") {
+      navigate("Home", { screen: "Duas" });
+    } else if (notification.data.notType == "Conference") {
+      navigate("Camps");
+    }
+    await notifee.cancelNotification(notification.id);
+  }
+});
 AppRegistry.registerComponent(appName, () => HeadlessCheck);
 TrackPlayer.registerPlaybackService(() => require("./service"));

@@ -14,6 +14,8 @@ import notifee, {
 import { persistor, store } from "./src/redux";
 import { setNotificationData } from "./src/redux/actions/Action";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { subscribeTopic } from "./src/Services/SubscribeTopic";
+import { navigate, navigationRef } from "./src/Routes/RootNavigation";
 
 // Settings.initializeSDK();
 const App = () => {
@@ -25,6 +27,29 @@ const App = () => {
       console.log("Notification handled in foreground", remoteMessage);
       onDisplayNotification(remoteMessage);
       store.dispatch(setNotificationData(remoteMessage));
+    });
+    // messaging().onNotificationOpenedApp((remoteMessage) => {
+    //   console.log("on notification opened app from background");
+    // });
+
+    notifee.onForegroundEvent(({ type, detail }) => {
+      console.log(detail, type);
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log("User dismissed notification", detail.notification);
+          break;
+        case EventType.PRESS:
+          console.log("User pressed notification", detail.notification);
+          if (detail?.notification?.data?.notType == "Event") {
+            navigate("Events");
+          } else if (detail?.notification?.data?.notType == "Dua") {
+            navigate("Home", { screen: "Duas" });
+          } else if (detail?.notification?.data?.notType == "Conference") {
+            navigate("Camps");
+          } else {
+            break;
+          }
+      }
     });
     return unsubscribe;
   }, []);
@@ -65,6 +90,7 @@ const App = () => {
     });
   }
   async function sendAsyncDataToStore() {
+    await subscribeTopic(["All"], (mess) => console.log(mess));
     const a = await AsyncStorage.getItem("NotData");
     if (a) {
       const parsedData = JSON.parse(a);
@@ -76,6 +102,7 @@ const App = () => {
     }
     await AsyncStorage.removeItem("NotData");
   }
+
   return (
     <Provider style={{ flex: 1 }} store={store}>
       <PersistGate loading={null} persistor={persistor}>

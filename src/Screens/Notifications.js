@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   Modal,
+  Image,
 } from "react-native";
 import { Btn } from "../../utilis/Btn";
 import BackGround from "../Components/Background";
@@ -21,8 +22,15 @@ import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
 import { UnsubscribeTopic } from "../Services/UnsubscribeTopic";
 import { subscribeTopic } from "../Services/SubscribeTopic";
+import { useDispatch, useSelector } from "react-redux";
+import { clearNotificationData } from "../redux/actions/Action";
+import ListEmptyComponent from "../Components/ListEmptyComponent";
 let copyOfPrevMosques = [];
 const Notification = ({ navigation }) => {
+  const notifications = useSelector(
+    (state) => state.Notifications.allNotifications
+  );
+  const dispatch = useDispatch();
   const [text, settext] = useState(["Select Mosques"]);
   const [arr, setarr] = useState([]);
   const [color, setColor] = useState(false);
@@ -143,13 +151,12 @@ const Notification = ({ navigation }) => {
         setMessage("Notification Centers Updated!!")
       );
   };
-
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
         <BackButton
           title={"Notification"}
-          onPressBack={() => navigation.navigate("Home")}
+          onPressBack={() => navigation.goBack()}
         />
         <ModalValidations visible={showModal} message={message} color={color} />
         <View style={styles.topTextView}>
@@ -167,6 +174,67 @@ const Notification = ({ navigation }) => {
             return <Text style={styles.textStyles}>{item}</Text>;
           })}
         </TouchableOpacity>
+        <Btn
+          text="UPDATE"
+          onPress={() => {
+            onSubmit();
+          }}
+          containerStyle={styles.bottomButton}
+          textStyle={style.thickHeader}
+        />
+        <View style={styles.notTextView}>
+          <Text style={styles.notText}>Notifications</Text>
+          <TouchableOpacity onPress={() => dispatch(clearNotificationData())}>
+            <Text style={[styles.notText, { color: colors.primary }]}>
+              Clear All
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={notifications}
+          contentContainerStyle={{ paddingBottom: hp(10) }}
+          ListEmptyComponent={
+            <ListEmptyComponent text={"No notification was found"} />
+          }
+          renderItem={({ item, index }) => {
+            console.log("data", item);
+            // 0: "https://firebasestorage.googleapis.com/v0/b/aswj-companion-3c915.appspot.com/o/eventImages%2FCapture.PNG?alt=media&token=3a70d5a5-94b8-4ab9-9fd8-1ab69b7af298"
+
+            return (
+              <TouchableOpacity
+                style={styles.notListContainer}
+                onPress={() => {
+                  if (item?.data?.notType == "Event") {
+                    navigation.navigate("Events");
+                  } else if (item?.data?.notType == "Dua") {
+                    navigation.navigate("Home", { screen: "Duas" });
+                  } else if (item?.data?.notType == "Conference") {
+                    navigation.navigate("Camps");
+                  }
+                }}
+              >
+                <Image
+                  source={
+                    item?.data?.imageUrl &&
+                    JSON.parse(item.data.imageUrl).length > 0
+                      ? { uri: JSON.parse(item.data.imageUrl)[0] }
+                      : require("../../Assets/fb_logo.jpg")
+                  }
+                  style={styles.notImage}
+                />
+                <View style={{ width: wp(65) }}>
+                  <Text style={styles.notTitleStyles}>
+                    {item?.notification?.title || "New Notification"}
+                  </Text>
+                  <Text style={style.notBodyStyles}>
+                    {item?.notification?.body ||
+                      "New Notification Was Recieved"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
         <Modal
           animationType="fade"
           transparent={true}
@@ -236,14 +304,6 @@ const Notification = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-        <Btn
-          text="UPDATE"
-          onPress={() => {
-            onSubmit();
-          }}
-          containerStyle={styles.bottomButton}
-          textStyle={style.thickHeader}
-        />
       </BackGround>
     </SafeAreaView>
   );
@@ -272,6 +332,42 @@ const styles = StyleSheet.create({
   textStyles: {
     color: colors.white,
     fontFamily: CustomFonts.regular,
+  },
+  notTextView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: wp(90),
+    alignSelf: "center",
+    marginVertical: hp(2),
+  },
+  notText: {
+    color: colors.white,
+    fontFamily: CustomFonts.bold,
+  },
+  notListContainer: {
+    backgroundColor: "rgba(255,255,255,0.7)",
+    marginVertical: hp(0.5),
+    marginHorizontal: wp(5),
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(1),
+    borderRadius: 5,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  notImage: {
+    width: wp(15),
+    height: wp(15),
+    borderRadius: wp(15),
+  },
+  notTitleStyles: {
+    color: colors.primary,
+    fontFamily: CustomFonts.bold,
+  },
+  notBodyStyles: {
+    color: colors.primary,
+    fontFamily: CustomFonts.bold,
   },
   modalContainer: {
     flex: 1,
@@ -316,12 +412,11 @@ const styles = StyleSheet.create({
   bottomButton: {
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
+    alignSelf: "center",
+    marginVertical: hp(1),
     backgroundColor: colors.primary,
     borderRadius: 5,
-    height: hp(7),
-    left: 0,
-    bottom: 0,
-    width: wp(100),
+    height: hp(6),
+    width: wp(85),
   },
 });

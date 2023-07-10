@@ -23,11 +23,12 @@ import BottomTabs from "./BottomTabs";
 import Settings from "../Screens/Settings";
 import VimeoAllVideos from "../Screens/VimeoAllVideos";
 import YouTubeAllVideos from "../Screens/YouTubeAllVideos";
+import { navigationRef } from "./RootNavigation";
 
 const Stack = createNativeStackNavigator();
 const Routes = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         initialRouteName={"SplashScreen"}
         screenOptions={{

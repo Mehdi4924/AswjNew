@@ -3,6 +3,7 @@ import { SafeAreaView, Image, Dimensions } from "react-native";
 import auth, { firebase } from "@react-native-firebase/auth";
 import database from "@react-native-firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { subscribeTopic } from "../Services/SubscribeTopic";
 
 const SplashScreen = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
@@ -15,11 +16,15 @@ const SplashScreen = ({ navigation }) => {
           let data = "";
           database()
             .ref("/profile")
-            .on("value", (snapshot) => {
+            .on("value", async (snapshot) => {
               data = snapshot.child(user.uid).val();
+              console.log("user details", data);
               if (data == null) {
                 navigation.navigate("UpdateProfile");
               } else {
+                await subscribeTopic([...data?.mosques], (mess) =>
+                  console.log(mess)
+                );
                 navigation.navigate("Home");
               }
             });

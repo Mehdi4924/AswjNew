@@ -27,7 +27,6 @@ const Duas = ({ navigation }) => {
   const [refresh, setRefresh] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [data2, setData2] = useState([]);
-
   useEffect(() => {
     if (arr.length == 0) {
       test();

@@ -18,6 +18,7 @@ import style from "../../Theme/styles";
 import { hp, wp } from "../../utilis/Responsive";
 import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
+import ListEmptyComponent from "../Components/ListEmptyComponent";
 
 const Events = ({ navigation }) => {
   const [arr, setarr] = useState([]);
@@ -58,7 +59,7 @@ const Events = ({ navigation }) => {
       .ref("/eventList")
       .on("value", (snapshot) => {
         let data = snapshot.val();
-        console.log(data,'====>>');
+        console.log(data, "====>>");
         let b, days, month, year;
         if (arr.length > 0) {
         } else {
@@ -146,6 +147,7 @@ const Events = ({ navigation }) => {
             onRefresh={() => test()}
             refreshing={fetching}
             contentContainerStyle={styles.listContentContainer}
+            ListEmptyComponent={<ListEmptyComponent />}
             extraData={refresh}
             renderItem={({ item, key }) => {
               return (

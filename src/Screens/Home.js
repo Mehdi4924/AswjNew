@@ -129,14 +129,14 @@ export default function Home(props) {
         console.log("success getting events", data);
         const arrOfEvents = [];
         for (let key in data) {
-          b = data[key].endDate;
+          let b = data[key]?.endDate;
           data[key].hashNumber = key;
           const thisDate = new Date();
           const year = `${thisDate.getFullYear()}`;
-          const b = data[key]?.endDate?.split("/");
-          b[2] = year.charAt(0) + year.charAt(1) + b[2];
+          b = data[key]?.endDate?.split("/");
+          b[2] = year?.charAt(0) + year?.charAt(1) + b[2];
           const finalDate = b.reverse().join("-");
-          if (finalDate <= thisDate.toISOString().split("T")[0]) {
+          if (finalDate >= thisDate.toISOString().split("T")[0]) {
             arrOfEvents.push({ ...data[key], id: key, type: "Event" });
           }
         }
