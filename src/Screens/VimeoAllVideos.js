@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  LogBox,
   StyleSheet,
   Text,
   TextInput,
@@ -16,8 +17,11 @@ import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
 import ListEmptyComponent from "../Components/ListEmptyComponent";
 import { Vimeo } from "react-native-vimeo-iframe";
+import Share from "react-native-share";
+
 let allDataresponse = [];
 export default function VimeoAllVideos(props) {
+  LogBox.ignoreAllLogs();
   const [videos, setVideos] = useState([]);
   const [fetching, setFetching] = useState(true);
   const [searchText, setSearchText] = useState("");
@@ -42,6 +46,19 @@ export default function VimeoAllVideos(props) {
         setFetching(false);
       });
   };
+  function onShare(item) {
+    const url =
+      item.type == "Youtube"
+        ? "Watch Aswj Youtube video \n https://www.youtube.com/watch?v=" +
+          item.id
+        : "Watch Aswj Vimeo video " + item.link;
+    Share.open({
+      message: url,
+      url: url,
+    }).then((res) => {
+      console.log(res);
+    });
+  }
   const renderItem = useCallback(({ item, index }) => {
     return (
       <View style={styles.listContainer} key={item?.id || index}>
@@ -67,18 +84,19 @@ export default function VimeoAllVideos(props) {
             />
             <Text style={styles.shareText}>Vimeo</Text>
           </View>
-          <View style={[styles.shareContainer, { justifyContent: "flex-end" }]}>
+          <TouchableOpacity
+            onPress={() => onShare(item)}
+            style={[styles.shareContainer, { justifyContent: "flex-end" }]}
+          >
             <Text style={styles.shareText}>Share</Text>
-            <TouchableOpacity onPress={() => null}>
-              <Icon
-                name="share-variant"
-                type="material-community"
-                size={hp(1)}
-                reverse
-                color={colors.primary}
-              />
-            </TouchableOpacity>
-          </View>
+            <Icon
+              name="share-variant"
+              type="material-community"
+              size={hp(1)}
+              reverse
+              color={colors.primary}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );

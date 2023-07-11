@@ -6,6 +6,7 @@ import {
   Dimensions,
   Modal,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import BackGround from "../Components/Background";
@@ -14,6 +15,7 @@ import style from "../../Theme/styles";
 import colors from "../../Theme/Colors";
 import { hp, wp } from "../../utilis/Responsive";
 import { CustomFonts } from "../../Theme/Fonts";
+import { Icon } from "@rneui/base";
 const SessionDetail = ({ navigation, route }) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -23,12 +25,18 @@ const SessionDetail = ({ navigation, route }) => {
   return (
     <SafeAreaView style={style.safeareaview}>
       <BackGround>
-        <BackButton
-          title={"Session Details"}
-          onPressBack={() => {
-            navigation.goBack(null);
-          }}
-        />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon
+              type="material-community"
+              name="chevron-left"
+              size={hp(4)}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Session Details</Text>
+          <View />
+        </View>
         <Text style={styles.title}>{data.title}</Text>
         <Text style={styles.dateTimeText}>
           {data.start_time + " "}-{" " + data.end_time}
@@ -50,6 +58,19 @@ const SessionDetail = ({ navigation, route }) => {
   );
 };
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: colors.white,
+    width: wp(100),
+    height: hp(7),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerText: {
+    fontFamily: CustomFonts.bold,
+    color: colors.primary,
+    fontSize: hp(2),
+  },
   title: {
     color: colors.primary,
     fontSize: hp(2.2),

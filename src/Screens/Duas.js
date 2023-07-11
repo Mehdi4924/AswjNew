@@ -96,7 +96,7 @@ const Duas = ({ navigation }) => {
             </View>
           ) : (
             <>
-              <Text style={styles.headerText}>ASWJ-Home</Text>
+              <Text style={styles.headerText}>Duas</Text>
             </>
           )}
           <FontAwesome

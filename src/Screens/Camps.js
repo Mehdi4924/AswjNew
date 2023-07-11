@@ -22,7 +22,6 @@ const Camps = ({ navigation, route }) => {
   const [arr, setarr] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [fetching, setFetching] = useState(false);
-
   useEffect(() => {
     if (arr.length == 0) {
       test();

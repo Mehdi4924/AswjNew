@@ -72,7 +72,7 @@ const SignUp = ({ navigation }) => {
           ASWJ COMPANION
         </Text>
         <View style={styles.signInView}>
-          <Text style={style.thickHeader}>SIGN IN </Text>
+          <Text style={style.thickHeader}>SIGN UP </Text>
           <Text style={style.lightheader}>NOW</Text>
         </View>
         <FormInput

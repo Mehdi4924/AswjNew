@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  StyleSheet,
-} from "react-native";
+import { SafeAreaView, Text, View, StyleSheet } from "react-native";
 import { FormInput } from "../../utilis/Text_input";
 import { Btn } from "../../utilis/Btn";
 import BackGround from "../Components/Background";
@@ -22,6 +17,7 @@ const ForgetPassword = ({ navigation }) => {
   const [color, setColor] = useState(false);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (showModal === true) {
       setTimeout(() => {
@@ -35,6 +31,7 @@ const ForgetPassword = ({ navigation }) => {
       setshowModal(true);
       setMessage(validate.errors);
     } else {
+      setIsLoading(true);
       firebase
         .auth()
         .sendPasswordResetEmail(Email)
@@ -42,9 +39,13 @@ const ForgetPassword = ({ navigation }) => {
           setshowModal(true);
           setColor(true);
           setMessage("Password reset email has been sent to your mail");
+          navigation.goBack();
         })
         .catch(function (e) {
           console.log(e);
+        })
+        .finally(function () {
+          setIsLoading(false);
         });
     }
   };
@@ -123,6 +124,7 @@ const ForgetPassword = ({ navigation }) => {
           onPress={() => {
             onSubmit();
           }}
+          isLoading={isLoading}
           containerStyle={styles.btnContainer}
           textStyle={styles.btnTextStyles}
         />

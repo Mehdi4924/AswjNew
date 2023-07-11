@@ -82,7 +82,7 @@ const FindMyMasjid = (props) => {
             style={{ height: hp(6), width: wp(20) }}
             resizeMode="contain"
           />
-          <Text style={styles.headerText}>ASWJ-Home</Text>
+          <Text style={styles.headerText}>Find Masjid</Text>
           <View style={styles.headerRight}>
             <TouchableOpacity
               onPress={() => props.navigation.navigate("Settings")}
@@ -193,6 +193,7 @@ const FindMyMasjid = (props) => {
                     onPress={() => {
                       if (item.check == true) {
                         item.check = false;
+                        settext("Select Mosques");
                       } else {
                         if (check.length == 0) {
                           item.check = true;
@@ -206,6 +207,7 @@ const FindMyMasjid = (props) => {
                           check.push(item);
                         }
                       }
+
                       setRefresh(!refresh);
                     }}
                     style={styles.listItems}

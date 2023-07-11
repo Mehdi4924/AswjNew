@@ -74,7 +74,7 @@ const Radio = ({ navigation }) => {
             style={{ height: hp(6), width: wp(15) }}
             resizeMode="contain"
           />
-          <Text style={styles.headerText}>ASWJ-Home</Text>
+          <Text style={styles.headerText}>ASWJ-Radio</Text>
           <View />
         </View>
         <Image
@@ -122,20 +122,20 @@ const Radio = ({ navigation }) => {
             onPress={() =>
               Linking.openURL("https://www.facebook.com/albayanradio/")
             }
-            color={colors.black}
+            color={colors.primary}
             size={27}
             name={"sc-facebook"}
             style={styles.bottomButtons}
           />
           <Ionicons
             onPress={() => Linking.openURL(`tel:${"0297406160"}`)}
-            color={colors.black}
+            color={colors.primary}
             size={20}
             name={"call"}
             style={styles.bottomButtons}
           />
           <MaterialCommunityIcons
-            color={colors.black}
+            color={colors.primary}
             onPress={() => Linking.openURL("mailto:info@albayan.com.au?")}
             size={20}
             name={"email"}
@@ -145,7 +145,7 @@ const Radio = ({ navigation }) => {
             onPress={() =>
               Linking.openURL("https://www.youtube.com/c/AlbayanRadioAustralia")
             }
-            color={colors.black}
+            color={colors.primary}
             size={20}
             name={"youtube"}
             style={styles.bottomButtons}

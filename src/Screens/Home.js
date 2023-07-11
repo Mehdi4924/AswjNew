@@ -1,9 +1,7 @@
 import {
-  Animated,
   FlatList,
   Image,
   ImageBackground,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,10 +18,11 @@ import {
   getVideos,
   getVideosFromYoutTube,
 } from "../../utilis/Api/Api_controller";
-import axios from "axios";
 import database from "@react-native-firebase/database";
 import ListEmptyComponent from "../Components/ListEmptyComponent";
 import Loader from "../Components/Loader";
+import Share from "react-native-share";
+
 let List = [];
 let pageNo = 1;
 let prevData = [];
@@ -51,14 +50,15 @@ export default function Home(props) {
       GetEvents(),
       GetDuas(),
     ]).then((res) => {
-      console.log("promise all resolving");
-      const shuffled = shuffle(List);
-      setFinalList([...prevData, ...shuffled]);
+      console.log("promise all resolving", List);
+      if (List.length > 0) {
+        const shuffled = shuffle(List);
+        setFinalList([...prevData, ...shuffled]);
+      }
       setFetching(false);
     });
   }
   const getDataFromVimeo = async () => {
-    console.log(pageNo);
     await getVideos(pageNo)
       .then((res) => {
         console.log("success getting videos from vimeo", res);
@@ -182,6 +182,19 @@ export default function Home(props) {
       contentSize.height - paddingToBottom
     );
   };
+  async function onShare(item) {
+    const url =
+      item.type == "Youtube"
+        ? "Watch Aswj Youtube video \n https://www.youtube.com/watch?v=" +
+          item.id
+        : "Watch Aswj Vimeo video " + item.link;
+    await Share.open({
+      message: url,
+      url: url,
+    }).then((res) => {
+      console.log(res);
+    });
+  }
   const renderItem = useCallback(({ item, index }) => {
     return (
       <View style={styles.listContainer} key={item?.id || index}>
@@ -234,16 +247,13 @@ export default function Home(props) {
                 time={"0m0s"}
               />
             ) : (
-              <>
-                <YoutubePlayer
-                  height={hp(27)}
-                  width={wp(93)}
-                  forceAndroidAutoplay={false}
-                  videoId={item?.id}
-                  onChangeState={(state) => console.log(state)}
-                />
-                {console.log("item is", item)}
-              </>
+              <YoutubePlayer
+                height={hp(27)}
+                width={wp(93)}
+                forceAndroidAutoplay={false}
+                videoId={item?.id}
+                onChangeState={(state) => null}
+              />
             )}
             <View style={styles.listBottomContainer}>
               <TouchableOpacity
@@ -261,26 +271,21 @@ export default function Home(props) {
                   style={styles.iconStyles}
                   color={colors.white}
                 />
-                <Text style={styles.shareText}>
-                  {item.type == "Vimeo"
-                    ? "View Vimeo Videos"
-                    : "View YouTube Videos"}
-                </Text>
+                <Text style={styles.shareText}>View All Videos</Text>
               </TouchableOpacity>
-              <View
+              <TouchableOpacity
+                onPress={() => onShare(item)}
                 style={[styles.shareContainer, { justifyContent: "flex-end" }]}
               >
                 <Text style={styles.shareText}>Share</Text>
-                <TouchableOpacity onPress={() => null}>
-                  <Icon
-                    name="share-variant"
-                    type="material-community"
-                    size={hp(1)}
-                    reverse
-                    color={colors.primary}
-                  />
-                </TouchableOpacity>
-              </View>
+                <Icon
+                  name="share-variant"
+                  type="material-community"
+                  size={hp(1)}
+                  reverse
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
             </View>
           </>
         )}
@@ -324,7 +329,6 @@ export default function Home(props) {
         onScroll={({ nativeEvent }) => {
           currentscrollOffset = nativeEvent.contentOffset.y;
           if (isCloseToBottom(nativeEvent)) {
-            console.log("end reached");
             pageNo = pageNo + 1;
             List = [];
             prevData = [...finalList];

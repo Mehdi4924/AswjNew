@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   SafeAreaView,
-  Share,
   Text,
   TouchableOpacity,
   View,
   StyleSheet,
   Dimensions,
+  Share,
 } from "react-native";
 import BackGround from "../Components/Background";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -15,7 +15,9 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 import database from "@react-native-firebase/database";
 import style from "../../Theme/styles";
 import { ScrollView } from "react-native-gesture-handler";
+// import Share from "react-native-share";
 
+// let disable = false;
 const Duas2 = ({ navigation, route }) => {
   let type = route.params.type;
   const windowWidth = Dimensions.get("window").width;
@@ -46,39 +48,39 @@ const Duas2 = ({ navigation, route }) => {
         setarr(dataArr);
       });
   };
-  const findd = (text2) => {
-    if (text2 == "") {
-      setlist(list);
-    }
-    let text = text2.toLowerCase();
-    let trucks = list;
-    let filteredName = trucks.filter((item) => {
-      return item.text.toLowerCase().includes(text);
-    });
-    if (!text || text === "") {
-      setlist(list);
-    } else if (!Array.isArray(filteredName) && !filteredName.length) {
-    } else if (Array.isArray(filteredName)) {
-      setlist(filteredName);
-    }
-  };
-  const onShare = async (msg) => {
-    setdisable(true);
-    try {
-      const result = await Share.share({
-        message: msg,
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-        } else {
-        }
-      } else if (result.action === Share.dismissedAction) {
+  async function onShare(msg) {
+    // await Share.share({
+    //   message: msg,
+    //   url: "https://play.google.com/store/apps/details?id=com.aswj",
+    //   failOnCancel: true,
+    //   title: "asdf",
+    // })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((e) => {
+    //     console.log("error", e);
+    //   })
+    //   .finally(() => {
+    //     // setdisable(false);
+    //   });
+    Share.share(
+      {
+        message: "asdfa",
+        url: "www.google.com",
+        title: "title",
+      },
+      {
+        // Android only:
+        dialogTitle: "Share",
+        // iOS only:
+        excludedActivityTypes: ["com.apple.UIKit.activity.PostToTwitter"],
       }
-    } catch (error) {
-      // alert(error.message);
-    }
-    setdisable(false);
-  };
+    ).then((result) => {
+      console.log(result);
+    });
+  }
+  console.log(disable);
   const _renderItem = ({ item, index }) => {
     return (
       <ScrollView>
@@ -117,15 +119,18 @@ const Duas2 = ({ navigation, route }) => {
           <TouchableOpacity
             disabled={disable}
             style={{
-              // marginBottom: '50%',
               alignSelf: "flex-end",
               marginHorizontal: 10,
               backgroundColor: "#00A300",
               paddingVertical: 14,
               borderRadius: 50,
             }}
-            onPress={() => {
-              setdisable(true), onShare(item.arabic_text);
+            delayPressIn={500}
+            onPressIn={async () => {
+              // setdisable(true);
+              // setTimeout(() => {
+              onShare(item.arabic_text);
+              // }, 1000);
             }}
           >
             <Ionicons
@@ -172,8 +177,6 @@ const Duas2 = ({ navigation, route }) => {
               tappableDots={!!ref}
             />
             <Carousel
-              // containerStyle={{ma}}
-
               ref={ref}
               extraData={refresh}
               data={arr}
@@ -182,29 +185,6 @@ const Duas2 = ({ navigation, route }) => {
               itemWidth={windowWidth}
               onSnapToItem={(index) => setactivedot(index)}
             />
-
-            {/* <TouchableOpacity
-            style={{
-              marginBottom: '50%',
-              alignSelf: "flex-end",
-              marginHorizontal: 10,
-              backgroundColor: "#00A300",
-              paddingVertical: 14,
-              borderRadius: 50,
-            }}
-            onPress={() => onShare()}
-          >
-            <Ionicons
-              color={"#fff"}
-              size={30}
-              name={"md-share"}
-              style={{
-                alignSelf: "center",
-                marginHorizontal: 15,
-                textAlign: "center",
-              }}
-            />
-          </TouchableOpacity> */}
           </View>
         </ScrollView>
       </BackGround>

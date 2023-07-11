@@ -19,6 +19,7 @@ import colors from "../../Theme/Colors";
 import { CustomFonts } from "../../Theme/Fonts";
 import ListEmptyComponent from "../Components/ListEmptyComponent";
 import YoutubePlayer from "react-native-youtube-iframe";
+import Share from "react-native-share";
 
 let allDataresponse = [];
 export default function YouTubeAllVideos(props) {
@@ -45,7 +46,19 @@ export default function YouTubeAllVideos(props) {
         setFetching(false);
       });
   }
-
+  function onShare(item) {
+    const url =
+      item.type == "Youtube"
+        ? "Watch Aswj Youtube video \n https://www.youtube.com/watch?v=" +
+          item.id
+        : "Watch Aswj Vimeo video " + item.link;
+    Share.open({
+      message: url,
+      url: url,
+    }).then((res) => {
+      console.log(res);
+    });
+  }
   const renderItem = useCallback(({ item, index }) => {
     return (
       <View style={styles.listContainer} key={item?.etag || index}>
@@ -68,18 +81,19 @@ export default function YouTubeAllVideos(props) {
             />
             <Text style={styles.shareText}>You Tube</Text>
           </View>
-          <View style={[styles.shareContainer, { justifyContent: "flex-end" }]}>
+          <TouchableOpacity
+            onPress={() => onShare(item)}
+            style={[styles.shareContainer, { justifyContent: "flex-end" }]}
+          >
             <Text style={styles.shareText}>Share</Text>
-            <TouchableOpacity onPress={() => null}>
-              <Icon
-                name="share-variant"
-                type="material-community"
-                size={hp(1)}
-                reverse
-                color={colors.primary}
-              />
-            </TouchableOpacity>
-          </View>
+            <Icon
+              name="share-variant"
+              type="material-community"
+              size={hp(1)}
+              reverse
+              color={colors.primary}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );

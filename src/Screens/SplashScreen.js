@@ -25,13 +25,13 @@ const SplashScreen = ({ navigation }) => {
                 await subscribeTopic([...data?.mosques], (mess) =>
                   console.log(mess, data.mosques)
                 );
-                navigation.navigate("Home");
+                navigation.replace("Home");
               }
             });
         } else if (v == 1) {
-          navigation.navigate("Home");
+          navigation.replace("Home");
         } else {
-          navigation.navigate("Login");
+          navigation.replace("Login");
         }
       });
     }, 3000);
