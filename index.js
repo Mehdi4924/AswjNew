@@ -74,10 +74,11 @@ function HeadlessCheck({ isHeadless }) {
 }
 notifee.onBackgroundEvent(async ({ type, detail }) => {
   const { notification, pressAction } = detail;
-  if (type === EventType.ACTION_PRESS) {
+  if (type === EventType.PRESS) {
+    console.log("background event", notification, pressAction);
     console.log("notification press in bavkground", notification);
     if (notification.data.notType == "Event") {
-      navigate("Events");
+      navigate("Home", { screen: "Events" });
     } else if (notification.data.notType == "Dua") {
       navigate("Home", { screen: "Duas" });
     } else if (notification.data.notType == "Conference") {

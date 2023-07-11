@@ -59,19 +59,19 @@ const Events = ({ navigation }) => {
       .ref("/eventList")
       .on("value", (snapshot) => {
         let data = snapshot.val();
-        console.log(data, "====>>");
         let b, days, month, year;
         if (arr.length > 0) {
         } else {
           for (let key in data) {
-            b = data[key].endDate;
+            let b = data[key].endDate;
             data[key].hashNumber = key;
             const thisDate = new Date();
             const year = `${thisDate.getFullYear()}`;
-            const b = data[key]?.endDate?.split("/");
+            b = data[key]?.endDate?.split("/");
             b[2] = year.charAt(0) + year.charAt(1) + b[2];
             const finalDate = b.reverse().join("-");
             if (finalDate >= thisDate.toISOString().split("T")[0]) {
+              console.log(data[key]);
               arr.push(data[key]);
               setRefresh(!refresh);
             }

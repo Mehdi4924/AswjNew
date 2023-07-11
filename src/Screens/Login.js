@@ -132,7 +132,7 @@ const Login = ({ navigation }) => {
       await auth().signInWithEmailAndPassword(email, password);
       setIsLoading(false);
     } catch (e) {
-      console.log("is called", e);
+      setIsLoading(false);
       if (
         e.message ==
         "[auth/wrong-password] The password is invalid or the user does not have a password."

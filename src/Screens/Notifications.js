@@ -170,9 +170,13 @@ const Notification = ({ navigation }) => {
           onPress={() => setshowModal2(true)}
           style={styles.textContainer}
         >
-          {text.map((item) => {
-            return <Text style={styles.textStyles}>{item}</Text>;
-          })}
+          {text && text.length ? (
+            text.map((item) => {
+              return <Text style={styles.textStyles}>{item}</Text>;
+            })
+          ) : (
+            <Text style={styles.textStyles}>Please Select Center</Text>
+          )}
         </TouchableOpacity>
         <Btn
           text="UPDATE"
@@ -197,15 +201,12 @@ const Notification = ({ navigation }) => {
             <ListEmptyComponent text={"No notification was found"} />
           }
           renderItem={({ item, index }) => {
-            console.log("data", item);
-            // 0: "https://firebasestorage.googleapis.com/v0/b/aswj-companion-3c915.appspot.com/o/eventImages%2FCapture.PNG?alt=media&token=3a70d5a5-94b8-4ab9-9fd8-1ab69b7af298"
-
             return (
               <TouchableOpacity
                 style={styles.notListContainer}
                 onPress={() => {
                   if (item?.data?.notType == "Event") {
-                    navigation.navigate("Events");
+                    navigation.navigate("Home", { screen: "Events" });
                   } else if (item?.data?.notType == "Dua") {
                     navigation.navigate("Home", { screen: "Duas" });
                   } else if (item?.data?.notType == "Conference") {

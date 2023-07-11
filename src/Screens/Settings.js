@@ -20,15 +20,21 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth, { firebase } from "@react-native-firebase/auth";
 import { LcoationGetting } from "../../utilis/LocationGetting";
+import database from "@react-native-firebase/database";
+import { clearNotificationData } from "../redux/actions/Action";
+import { useDispatch } from "react-redux";
+import { UnsubscribeTopic } from "../Services/UnsubscribeTopic";
 
 export default function Settings(props) {
   const [user, setUser] = useState();
+  const dispatch = useDispatch();
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user == null) {
         setUser(null);
       } else {
         setUser(user);
+        GetUserDetails(user);
       }
     });
   }, []);
@@ -68,13 +74,25 @@ export default function Settings(props) {
     } else {
       auth()
         .signOut()
-        .then(() =>
-          props.navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }],
-          })
+        .then(
+          async () =>
+            props.navigation.reset({
+              index: 0,
+              routes: [{ name: "Login" }],
+            }),
+          dispatch(clearNotificationData()),
         );
     }
+  };
+  const GetUserDetails = async (user) => {
+    database()
+      .ref("profile/" + user.uid)
+      .on("value", (snapshot) => {
+        let data = snapshot.val();
+        if (data !== null) {
+          setUser({ ...data, ...user._user });
+        }
+      });
   };
   return (
     <ImageBackground
@@ -101,8 +119,8 @@ export default function Settings(props) {
         />
         <Text style={styles.goHomeText}>Go Back</Text>
       </TouchableOpacity>
-      <Text style={styles.userNameText}>Iftikhar Mehdi</Text>
-      <Text style={styles.userEmailText}>Anonymous@gmail.com</Text>
+      <Text style={styles.userNameText}>{user?.fullName || "Loading"}</Text>
+      <Text style={styles.userEmailText}>{user?.email || "Loading"}</Text>
       <TouchableOpacity
         style={styles.editProfileView}
         onPress={() => props.navigation.navigate("profile")}

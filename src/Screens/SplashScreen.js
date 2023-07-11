@@ -23,7 +23,7 @@ const SplashScreen = ({ navigation }) => {
                 navigation.navigate("UpdateProfile");
               } else {
                 await subscribeTopic([...data?.mosques], (mess) =>
-                  console.log(mess)
+                  console.log(mess, data.mosques)
                 );
                 navigation.navigate("Home");
               }

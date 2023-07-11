@@ -79,11 +79,14 @@ export default function Home(props) {
       .then((res) => {
         console.log("videos from youtube", res.data.items);
         if (res?.data?.items?.length > 0) {
-          const finalData = res?.data?.items.map((item) => {
-            return { ...item, type: "Youtube", id: item.id.videoId };
+          const newArr = [];
+          res?.data?.items.map((item) => {
+            if (item?.id?.videoId) {
+              newArr.push({ ...item, type: "Youtube", id: item.id.videoId });
+            }
           });
-          finalData.splice(0, (pageNo - 1) * 10);
-          List = [...List, ...finalData];
+          newArr.splice(0, (pageNo - 1) * 10);
+          List = [...List, ...newArr];
         }
       })
       .catch((err) => {
@@ -231,13 +234,16 @@ export default function Home(props) {
                 time={"0m0s"}
               />
             ) : (
-              <YoutubePlayer
-                height={hp(27)}
-                width={wp(93)}
-                forceAndroidAutoplay={false}
-                videoId={item?.id?.videoId}
-                onChangeState={(state) => console.log(state)}
-              />
+              <>
+                <YoutubePlayer
+                  height={hp(27)}
+                  width={wp(93)}
+                  forceAndroidAutoplay={false}
+                  videoId={item?.id}
+                  onChangeState={(state) => console.log(state)}
+                />
+                {console.log("item is", item)}
+              </>
             )}
             <View style={styles.listBottomContainer}>
               <TouchableOpacity

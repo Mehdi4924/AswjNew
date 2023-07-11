@@ -64,7 +64,6 @@ const Profile = ({ navigation, route }) => {
     });
   }, []);
   const test = async (id) => {
-    console.log("caleed");
     database()
       .ref("/mosqueList")
       .on("value", (snapshot) => {
@@ -78,7 +77,6 @@ const Profile = ({ navigation, route }) => {
           .ref("profile/" + id)
           .on("value", (snapshot) => {
             let data = snapshot.val();
-
             if (data !== null) {
               onChangeName(data.fullName);
               if (data.mosques != undefined) {
@@ -156,9 +154,7 @@ const Profile = ({ navigation, route }) => {
         })
         .then(async () => {
           console.log("Data updated."),
-            await subscribeTopic([...MosqKey], (mess) =>
-              console.log(mess)
-            );
+            await subscribeTopic([...MosqKey], (mess) => console.log(mess));
         })
         .catch((err) => {
           console.log(err);
@@ -229,7 +225,7 @@ const Profile = ({ navigation, route }) => {
               >
                 <Text style={style.thickHeader}>FEMALE</Text>
                 <FontAwesome
-                  color={male ? colors.primary : "rgba(255,255,255,0.2)"}
+                  color={female ? colors.primary : "rgba(255,255,255,0.2)"}
                   size={hp(3)}
                   name={female ? "dot-circle-o" : "circle-o"}
                 />

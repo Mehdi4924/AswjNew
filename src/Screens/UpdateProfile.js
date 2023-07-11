@@ -184,7 +184,7 @@ const UpdateProfile = ({ navigation, route }) => {
               >
                 <Text style={style.thickHeader}>FEMALE</Text>
                 <FontAwesome
-                  color={male ? colors.primary : "rgba(255,255,255,0.2)"}
+                  color={female ? colors.primary : "rgba(255,255,255,0.2)"}
                   size={hp(3)}
                   name={female ? "dot-circle-o" : "circle-o"}
                 />

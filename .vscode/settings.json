@@ -4,5 +4,7 @@
         "**/node_modules": false
     },
     "search.useParentIgnoreFiles": false,
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "npm.enableRunFromFolder": true,
+    "npm.packageManager": "npm"
 }

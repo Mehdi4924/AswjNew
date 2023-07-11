@@ -110,6 +110,7 @@ const Duas = ({ navigation }) => {
         <FlatList
           data={arr}
           onRefresh={() => test()}
+          contentContainerStyle={{ paddingBottom: hp(8) }}
           refreshing={fetching}
           renderItem={({ item, key }) => (
             <TouchableOpacity

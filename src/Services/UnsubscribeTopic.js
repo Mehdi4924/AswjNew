@@ -6,13 +6,13 @@ export async function UnsubscribeTopic(arrOfCenters, cb) {
     await arrOfCenters.map(async (item) => {
       await messaging()
         .unsubscribeFromTopic(item)
-        .then((res) => console.log("unsubed", item))
+        .then((res) => null)
         .catch((err) => {
           console.log("unsub error", item);
         });
+      cb("un subscribed All" + item);
     });
   } else {
     cb("No Centers Selected");
   }
-  cb("un subscribed All");
 }
