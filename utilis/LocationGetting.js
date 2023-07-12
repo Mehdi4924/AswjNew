@@ -12,8 +12,8 @@ export async function LocationGetting() {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
-        title: "Sundas Blood Bank",
-        message: "Sundas Blood Bank wants access to your location ",
+        title: "Aswj",
+        message: "Aswj wants access to your location ",
       }
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {

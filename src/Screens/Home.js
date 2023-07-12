@@ -292,6 +292,7 @@ export default function Home(props) {
       </View>
     );
   }, []);
+  console.log(finalList);
   return (
     <ImageBackground
       source={require("../../Assets/Dark_Bg_ASWJ.png")}
@@ -307,7 +308,9 @@ export default function Home(props) {
         <Text style={styles.headerText}>ASWJ-Home</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity
-            onPress={() => props.navigation.navigate("Settings")}
+            onPress={() => {
+              props.navigation.navigate("Settings");
+            }}
           >
             <Icon
               type="material-community"
@@ -324,6 +327,9 @@ export default function Home(props) {
         key={(item, index) => item.id}
         ListEmptyComponent={fetching ? null : <ListEmptyComponent />}
         extraData={List}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={50}
+        updateCellsBatchingPeriod={100}
         contentContainerStyle={{ paddingVertical: hp(2), paddingBottom: hp(8) }}
         renderItem={renderItem}
         onScroll={({ nativeEvent }) => {

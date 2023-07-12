@@ -24,8 +24,8 @@ import { Icon } from "@rneui/base";
 import { LocationGetting } from "../../utilis/LocationGetting";
 import Toast from "react-native-simple-toast";
 import LoadingDots from "../Components/LoadingDots";
-
 const GOOGLE_MAPS_APIKEY = "AIzaSyAizf1uimNFXUerqmfomTFsJqGmac4_GPM";
+let copyOfArr = [];
 const FindMyMasjid = (props) => {
   const { navigation } = props;
   const [text, settext] = useState("Select Mosques");
@@ -64,6 +64,7 @@ const FindMyMasjid = (props) => {
           arr.push(data[key]);
           setRefresh(!refresh);
         }
+        copyOfArr = arr.map((obj) => ({ ...obj }));
       });
   };
   const onPressok = () => {
@@ -226,6 +227,8 @@ const FindMyMasjid = (props) => {
                 <Btn
                   text="CANCEL"
                   onPress={() => {
+                    settext("Select Mosques");
+                    setarr(copyOfArr);
                     setshowModal2(false);
                   }}
                   containerStyle={styles.buttonContainer}

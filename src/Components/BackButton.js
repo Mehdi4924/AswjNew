@@ -61,7 +61,8 @@ class BackButton extends React.Component {
         let Profiledata;
         database()
           .ref("profile/" + id)
-          .on("value", (snapshot) => {
+          .once("value")
+          .then((snapshot) => {
             Profiledata = snapshot.val();
             console.log("ProfileData", Profiledata);
             if (Profiledata == null) {

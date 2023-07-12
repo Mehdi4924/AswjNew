@@ -19,11 +19,10 @@ import {
 } from "react-native-fbsdk-next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth, { firebase } from "@react-native-firebase/auth";
-import { LcoationGetting } from "../../utilis/LocationGetting";
 import database from "@react-native-firebase/database";
 import { clearNotificationData } from "../redux/actions/Action";
 import { useDispatch } from "react-redux";
-import { UnsubscribeTopic } from "../Services/UnsubscribeTopic";
+import Toast from "react-native-simple-toast";
 
 export default function Settings(props) {
   const [user, setUser] = useState();
@@ -80,14 +79,15 @@ export default function Settings(props) {
               index: 0,
               routes: [{ name: "Login" }],
             }),
-          dispatch(clearNotificationData()),
+          dispatch(clearNotificationData())
         );
     }
   };
   const GetUserDetails = async (user) => {
     database()
       .ref("profile/" + user.uid)
-      .on("value", (snapshot) => {
+      .once("value")
+      .then((snapshot) => {
         let data = snapshot.val();
         if (data !== null) {
           setUser({ ...data, ...user._user });
@@ -119,11 +119,18 @@ export default function Settings(props) {
         />
         <Text style={styles.goHomeText}>Go Back</Text>
       </TouchableOpacity>
-      <Text style={styles.userNameText}>{user?.fullName || "Loading"}</Text>
-      <Text style={styles.userEmailText}>{user?.email || "Loading"}</Text>
+      <Text style={styles.userNameText}>{user?.fullName || "N/A"}</Text>
+      <Text style={styles.userEmailText}>{user?.email || "N/A"}</Text>
       <TouchableOpacity
         style={styles.editProfileView}
-        onPress={() => props.navigation.navigate("profile")}
+        onPress={async () => {
+          let v = await AsyncStorage.getItem("Guest");
+          if (v == "1") {
+            Toast.show("Please Login First", Toast.SHORT);
+          } else {
+            props.navigation.navigate("profile");
+          }
+        }}
       >
         <Text style={styles.editText}>Edit Profile</Text>
         <Icon
@@ -187,14 +194,21 @@ export default function Settings(props) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.buttonContainer}
-        onPress={async () => props.navigation.navigate("Notification")}
+        onPress={async () => {
+          let v = await AsyncStorage.getItem("Guest");
+          if (v == "1") {
+            Toast.show("Please Login First", Toast.SHORT);
+          } else {
+            props.navigation.navigate("Notification");
+          }
+        }}
       >
         <Image
           source={require("../../Assets/bell.png")}
           style={{ width: wp(10), height: hp(4) }}
           resizeMode="contain"
         />
-        <Text style={styles.containerText}>Notifcations</Text>
+        <Text style={styles.containerText}>Notifications</Text>
         <Icon
           type="material-community"
           name="chevron-right"

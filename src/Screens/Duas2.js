@@ -49,36 +49,20 @@ const Duas2 = ({ navigation, route }) => {
       });
   };
   async function onShare(msg) {
-    // await Share.share({
-    //   message: msg,
-    //   url: "https://play.google.com/store/apps/details?id=com.aswj",
-    //   failOnCancel: true,
-    //   title: "asdf",
-    // })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((e) => {
-    //     console.log("error", e);
-    //   })
-    //   .finally(() => {
-    //     // setdisable(false);
-    //   });
-    Share.share(
-      {
-        message: "asdfa",
-        url: "www.google.com",
-        title: "title",
-      },
-      {
-        // Android only:
-        dialogTitle: "Share",
-        // iOS only:
-        excludedActivityTypes: ["com.apple.UIKit.activity.PostToTwitter"],
-      }
-    ).then((result) => {
-      console.log(result);
-    });
+    await Share.share({
+      message: msg,
+      url: "https://play.google.com/store/apps/details?id=com.aswj",
+      failOnCancel: true,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log("error", e);
+      })
+      .finally(() => {
+        // setdisable(false);
+      });
   }
   console.log(disable);
   const _renderItem = ({ item, index }) => {

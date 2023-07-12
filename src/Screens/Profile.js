@@ -28,22 +28,19 @@ import { CustomFonts } from "../../Theme/Fonts";
 import { subscribeTopic } from "../Services/SubscribeTopic";
 import { UnsubscribeTopic } from "../Services/UnsubscribeTopic";
 let copyOfPrevMosques = [];
+let copyOfText = [];
+let copyOfArr = [];
 const Profile = ({ navigation, route }) => {
-  const windowHeight = Dimensions.get("window").height;
   const [Name, onChangeName] = useState();
-  const [errors, setError] = useState(null);
   const [color, setColor] = useState(false);
   const [text, settext] = useState([]);
-  const [inputBorder, setinputBorder] = useState(false);
   const [message, setMessage] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [male, setmale] = useState(false);
   const [female, setfemale] = useState(false);
   const [showModal2, setshowModal2] = useState(false);
   const [arrs, setarr] = useState([]);
-  const [Mosq, setMosq] = useState([]);
   const [MosqKey, setMosqKey] = useState([]);
-  const [Key, setKey] = useState();
   const [uid, setUid] = useState();
   const [refresh, setRefresh] = useState(false);
 
@@ -75,7 +72,8 @@ const Profile = ({ navigation, route }) => {
         }
         database()
           .ref("profile/" + id)
-          .on("value", (snapshot) => {
+          .once("value")
+          .then((snapshot) => {
             let data = snapshot.val();
             if (data !== null) {
               onChangeName(data.fullName);
@@ -100,7 +98,9 @@ const Profile = ({ navigation, route }) => {
                   }
                 }
                 settext(fields);
+                copyOfText = [...fields];
               }
+              copyOfArr = arr.map((obj) => ({ ...obj }));
               setarr(arr);
               setRefresh(!refresh);
             }
@@ -155,14 +155,14 @@ const Profile = ({ navigation, route }) => {
         .then(async () => {
           console.log("Data updated."),
             await subscribeTopic([...MosqKey], (mess) => console.log(mess));
+          setshowModal(true);
+          setMessage("Your profile is updated!!");
+          setColor(true);
+          // navigation.goBack();
         })
         .catch((err) => {
           console.log(err);
         });
-
-      setshowModal(true);
-      setMessage("Your profile is updated!!");
-      setColor(true);
     }
   };
   return (
@@ -187,7 +187,7 @@ const Profile = ({ navigation, route }) => {
               style={styles.inputStyles}
               text_input_container={styles.inputContainer}
               onChangeText={(Name) => {
-                setError(""), onChangeName(Name), setinputBorder(true);
+                onChangeName(Name);
               }}
             />
             <TouchableOpacity
@@ -283,6 +283,9 @@ const Profile = ({ navigation, route }) => {
                   text="CANCEL"
                   onPress={() => {
                     setshowModal2(false);
+                    settext(copyOfText);
+                    setarr(copyOfArr);
+                    setMosqKey(copyOfPrevMosques);
                   }}
                   containerStyle={[
                     styles.modalBtnStyles,

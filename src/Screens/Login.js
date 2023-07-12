@@ -132,6 +132,7 @@ const Login = ({ navigation }) => {
       await auth().signInWithEmailAndPassword(email, password);
       setIsLoading(false);
     } catch (e) {
+      console.log("error signing in", e);
       setIsLoading(false);
       if (
         e.message ==

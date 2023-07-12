@@ -41,7 +41,8 @@ const EventDetail = ({ navigation, route }) => {
         exits(user.uid);
         database()
           .ref("profile/" + uid)
-          .on("value", (snapshot) => {
+          .once("value")
+          .then((snapshot) => {
             let data = snapshot.val();
             if (data == null) {
             } else {

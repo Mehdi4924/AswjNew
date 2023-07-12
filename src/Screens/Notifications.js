@@ -68,7 +68,8 @@ const Notification = ({ navigation }) => {
         }
         database()
           .ref("profile/" + id)
-          .on("value", (snapshot) => {
+          .once("value")
+          .then((snapshot) => {
             let data = snapshot.val();
             if (data == null) {
             } else {

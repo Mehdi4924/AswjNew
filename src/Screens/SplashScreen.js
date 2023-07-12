@@ -13,18 +13,19 @@ const SplashScreen = ({ navigation }) => {
       let v = await AsyncStorage.getItem("Guest");
       firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-          let data = "";
           database()
             .ref("/profile")
             .on("value", async (snapshot) => {
-              data = snapshot.child(user.uid).val();
-              console.log("user details", data);
+              const data = snapshot.child(user.uid).val();
+              console.log("user details", data, user);
               if (data == null) {
                 navigation.navigate("UpdateProfile");
               } else {
-                await subscribeTopic([...data?.mosques], (mess) =>
-                  console.log(mess, data.mosques)
-                );
+                data?.mosques?.length > 1
+                  ? await subscribeTopic([...data?.mosques], (mess) =>
+                      console.log(mess, data.mosques)
+                    )
+                  : null;
                 navigation.replace("Home");
               }
             });
