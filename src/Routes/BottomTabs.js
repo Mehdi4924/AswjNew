@@ -3,7 +3,7 @@ import {
   PermissionsAndroid,
   StyleSheet,
   Text,
-  View,
+  View, Platform
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -25,7 +25,7 @@ export default function BottomTabs() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarStyle: { height: hp(7) },
+        tabBarStyle: { height: Platform.OS == 'ios' ? hp(10) : hp(7), paddingTop: Platform.OS == 'ios' ? hp(2) : 0 },
       }}
     >
       <BottomTabNavigator.Screen

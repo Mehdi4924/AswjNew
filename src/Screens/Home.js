@@ -22,6 +22,7 @@ import database from "@react-native-firebase/database";
 import ListEmptyComponent from "../Components/ListEmptyComponent";
 import Loader from "../Components/Loader";
 import Share from "react-native-share";
+import GetTimings from "../Services/GetTimings";
 
 let List = [];
 let pageNo = 1;
@@ -30,8 +31,13 @@ let currentscrollOffset = 0;
 export default function Home(props) {
   const [finalList, setFinalList] = useState([]);
   const [fetching, setFetching] = useState(false);
+  const [namazTimings, setNamazTimings] = useState();
+  const [defaultMasjid, setDefaultMasjid] = useState();
+  const [eventList, setEventList] = useState([]);
+
   const flatListRef = useRef();
   useEffect(() => {
+    getTime();
     ResolveAllPromises();
     const unsubscribe = props.navigation.addListener("tabPress", (e) => {
       if (currentscrollOffset != 0) {
@@ -42,6 +48,12 @@ export default function Home(props) {
     });
     return unsubscribe;
   }, []);
+  function getTime() {
+    GetTimings((res) => {
+      setNamazTimings(res.timings)
+      setDefaultMasjid(res.center)
+    })
+  }
   async function ResolveAllPromises() {
     setFetching(true);
     await Promise.all([
@@ -72,7 +84,7 @@ export default function Home(props) {
       .catch((err) => {
         console.log("error getting videos from vimeo", err);
       })
-      .finally(function () {});
+      .finally(function () { });
   };
   async function GetVideosFromYoutube() {
     await getVideosFromYoutTube(pageNo)
@@ -146,7 +158,7 @@ export default function Home(props) {
         if (arrOfEvents.length > 0) {
           const newArr = [];
           arrOfEvents.map((item) => {
-            const index = finalList.findIndex(
+            const index = eventList.findIndex(
               (finalListItem) =>
                 finalListItem.type == "Event" && finalListItem.id == item.id
             );
@@ -154,7 +166,7 @@ export default function Home(props) {
               newArr.push(item);
             }
           });
-          List = [...List, ...newArr];
+          setEventList([...eventList, ...newArr])
         }
       });
   }
@@ -186,7 +198,7 @@ export default function Home(props) {
     const url =
       item.type == "Youtube"
         ? "Watch Aswj Youtube video \n https://www.youtube.com/watch?v=" +
-          item.id
+        item.id
         : "Watch Aswj Vimeo video " + item.link;
     await Share.open({
       message: url,
@@ -210,28 +222,6 @@ export default function Home(props) {
               <Text style={styles.listText}>{item.name}</Text>
             </TouchableOpacity>
           </>
-        ) : item.type == "Event" ? (
-          <TouchableOpacity
-            style={styles.eventContainer}
-            onPress={() => {
-              props.navigation.navigate("eventDetail", {
-                data: item,
-              });
-            }}
-          >
-            <Image
-              style={styles.listLogo}
-              source={
-                item?.imageUrl?.length < 1
-                  ? require("../../Assets/fb_logo.jpg")
-                  : { uri: item.imageUrl[0] }
-              }
-            />
-            <View style={{ width: "82%" }}>
-              <Text style={styles.listHeadingText}>{item?.title}</Text>
-              <Text style={styles.listDate}>{item?.startDate}</Text>
-            </View>
-          </TouchableOpacity>
         ) : (
           <>
             <Text style={styles.listHeadingStyles}>{item.name}</Text>
@@ -292,7 +282,79 @@ export default function Home(props) {
       </View>
     );
   }, []);
-  console.log(finalList);
+  const ListHeadItems = () => {
+    return (
+      <>
+        <View style={{ flex: 1 }}>
+          {!!namazTimings &&
+            <>
+              <Text style={styles.headerMainText}>Prayer Timings ({defaultMasjid?.name || ""})</Text>
+              <View style={styles.listHeader}>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={styles.thickHeader}>Fajar</Text>
+                  <Text style={styles.timingText}>{namazTimings.Fajar} AM</Text>
+                  <Text style={styles.timingText}>{namazTimings.Fajar_Iqamah} AM</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={styles.thickHeader}>Dhuhr</Text>
+                  <Text style={styles.timingText}>{namazTimings.Dhuhr} PM</Text>
+                  <Text style={styles.timingText}>{namazTimings.Dhuhr_Iqamah} PM</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={styles.thickHeader}>Asar</Text>
+                  <Text style={styles.timingText}>{namazTimings.Asar} PM</Text>
+                  <Text style={styles.timingText}>{namazTimings.Asar_Iqamah} PM</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={styles.thickHeader}>Maghrib</Text>
+                  <Text style={styles.timingText}>{namazTimings.Maghrib} PM</Text>
+                  <Text style={styles.timingText}>{namazTimings.Maghrib_Iqamah} PM</Text>
+                </View>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={styles.thickHeader}>Isha</Text>
+                  <Text style={styles.timingText}>{namazTimings.Isha} PM</Text>
+                  <Text style={styles.timingText}>{namazTimings.Isha_Iqamah} PM</Text>
+                </View>
+              </View>
+            </>
+          }
+          {eventList && eventList.length > 0 &&
+            <>
+              <Text style={styles.headerMainText}>Event Notifications</Text>
+              {eventList.map(item => {
+                return (
+                  < TouchableOpacity
+                    style={styles.eventContainer}
+                    onPress={() => {
+                      props.navigation.navigate("eventDetail", {
+                        data: item,
+                      });
+                    }}
+                  >
+                    <Image
+                      style={styles.listLogo}
+                      source={
+                        item?.imageUrl?.length < 1
+                          ? require("../../Assets/fb_logo.jpg")
+                          : { uri: item.imageUrl[0] }
+                      }
+                    />
+                    <View style={{ width: "82%" }}>
+                      <Text style={styles.listHeadingText}>{item?.title}</Text>
+                      <Text style={styles.listDate}>{item?.startDate}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )
+              })}
+            </>
+          }
+          <Text style={styles.headerMainText}>Scroll For Updates</Text>
+        </View >
+      </>
+
+    )
+  }
+  console.log('namaz timings', namazTimings, defaultMasjid);
   return (
     <ImageBackground
       source={require("../../Assets/Dark_Bg_ASWJ.png")}
@@ -326,6 +388,7 @@ export default function Home(props) {
         ref={(ref) => (flatListRef.current = ref)}
         key={(item, index) => item.id}
         ListEmptyComponent={fetching ? null : <ListEmptyComponent />}
+        ListHeaderComponent={<ListHeadItems />}
         extraData={List}
         removeClippedSubviews={true}
         maxToRenderPerBatch={50}
@@ -432,10 +495,14 @@ const styles = StyleSheet.create({
     fontFamily: CustomFonts.regular,
   },
   eventContainer: {
+    backgroundColor: colors.white,
+    marginVertical: hp(0.5),
+    borderRadius: 5,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: wp(90),
+    width: wp(95),
     alignItems: "center",
+    alignSelf: "center"
   },
   listLogo: {
     height: hp(6),
@@ -456,6 +523,48 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: hp(1.6),
     fontFamily: CustomFonts.bold,
+  },
+  headerMainText: {
+    color: colors.white,
+    fontFamily: CustomFonts.bold,
+    alignSelf: "center",
+    fontSize: hp(2.2),
+    marginVertical: hp(0.5)
+  },
+  //list header styles
+  timingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255,255,255, 0.5)",
+    marginVertical: hp(0.5),
+    paddingVertical: hp(1),
+    marginHorizontal: wp(2),
+    paddingHorizontal: wp(5),
+    borderRadius: 5,
+  },
+  timingText: {
+    fontFamily: CustomFonts.regular,
+    color: colors.black,
+    fontSize: hp(1.5),
+    marginVertical: hp(0.5)
+  },
+  listHeader: {
+    backgroundColor: "rgba(255,255,255,0.7)",
+    marginHorizontal: wp(2.5),
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(2),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderRadius: 5,
+    marginVertical: hp(1)
+  },
+  thickHeader: {
+    fontSize: hp(1.5),
+    fontFamily: CustomFonts.bold,
+    color: colors.primary,
+    alignSelf: "center",
+    fontSize: 14,
   },
 });
 // Rux9r_?A_i!aZvK
