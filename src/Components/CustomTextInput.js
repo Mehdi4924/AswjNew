@@ -62,8 +62,9 @@ const styles = StyleSheet.create({
   },
   textInputStyles: {
     width: wp(78),
+    height:hp(6),
     fontSize: hp(1.8),
     color: colors.black,
-    fontFamily: CustomFonts.Regular,
+    fontFamily: CustomFonts.regular,
   },
 });

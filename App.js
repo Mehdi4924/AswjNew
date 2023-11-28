@@ -16,6 +16,9 @@ import { setNotificationData } from "./src/redux/actions/Action";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { subscribeTopic } from "./src/Services/SubscribeTopic";
 import { navigate, navigationRef } from "./src/Routes/RootNavigation";
+import { Platform, StatusBar, View } from "react-native";
+import colors from "./Theme/Colors";
+import { hp } from "./utilis/Responsive";
 
 // Settings.initializeSDK();
 const App = () => {
@@ -102,11 +105,24 @@ const App = () => {
     }
     await AsyncStorage.removeItem("NotData");
   }
-
+  function StatusBarPlaceHolder() {
+    const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? hp('6%') : hp('0%');
+    return (
+      <View
+        style={{
+          width: '100%',
+          height: STATUS_BAR_HEIGHT,
+          backgroundColor: colors.primary,
+        }}>
+        <StatusBar backgroundColor={colors.primary} barStyle="dark-content" />
+      </View>
+    );
+  }
   return (
     <Provider style={{ flex: 1 }} store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{ flex: 1 }}>
+          <StatusBarPlaceHolder/>
           <Routes />
         </GestureHandlerRootView>
       </PersistGate>
